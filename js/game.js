@@ -74,6 +74,8 @@ var camera, scene, renderer, controls;
 			var moveLeft = false;
 			var moveRight = false;
 			var canJump = false;
+			var crouch = false;
+			var sprint = false;
 
 			var prevTime = performance.now();
 			var velocity = new THREE.Vector3();
@@ -122,9 +124,12 @@ var camera, scene, renderer, controls;
 							moveRight = true;
 							break;
 
-						case 32: // space
-							if ( canJump === true ) velocity.y += 350;
-							canJump = false;
+						case 67: // control
+							crouch = true;
+							break;
+
+						case 16: // shift
+							sprint = true;
 							break;
 
 					}
@@ -153,6 +158,13 @@ var camera, scene, renderer, controls;
 						case 39: // right
 						case 68: // d
 							moveRight = false;
+							break;
+						case 67: // control
+							crouch = false;
+							break;
+						
+						case 16: //shift
+							sprint = false;
 							break;
 
 					}
@@ -204,38 +216,6 @@ var camera, scene, renderer, controls;
 				var floor = new THREE.Mesh( floorGeometry, floorMaterial );
 				scene.add( floor );
 
-				// objects
-
-				var boxGeometry = new THREE.BoxBufferGeometry( 20, 20, 20 );
-				boxGeometry = boxGeometry.toNonIndexed(); // ensure each face has unique vertices
-
-				position = boxGeometry.attributes.position;
-				colors = [];
-
-				for ( var i = 0, l = position.count; i < l; i ++ ) {
-
-					color.setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-					colors.push( color.r, color.g, color.b );
-
-				}
-
-				boxGeometry.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-
-				for ( var i = 0; i < 500; i ++ ) {
-
-					var boxMaterial = new THREE.MeshPhongMaterial( { specular: 0xffffff, flatShading: true, vertexColors: THREE.VertexColors } );
-					boxMaterial.color.setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-
-					var box = new THREE.Mesh( boxGeometry, boxMaterial );
-					box.position.x = Math.floor( Math.random() * 20 - 10 ) * 20;
-					box.position.y = Math.floor( Math.random() * 20 ) * 20 + 10;
-					box.position.z = Math.floor( Math.random() * 20 - 10 ) * 20;
-
-					scene.add( box );
-					objects.push( box );
-
-				}
-
 				//
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -285,6 +265,23 @@ var camera, scene, renderer, controls;
 
 					if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
 					if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
+
+					if( sprint ) {
+						if( moveForward ){
+							velocity.z = velocity.z * 1.11;
+						}
+					}
+
+					if( crouch ) {
+						if( camera.position.y > -5 ) camera.position.y -= 0.5;
+						else camera.position.y = -5;
+						velocity.x = velocity.x / 1.2;
+						velocity.z = velocity.z / 1.2;
+					}
+					else {
+						if( camera.position.y < 0 ) camera.position.y += 0.5;
+						else camera.position.y = 0;
+					}
 
 					if ( onObject === true ) {
 
