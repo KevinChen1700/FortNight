@@ -76,6 +76,9 @@ var camera, scene, renderer, controls;
 			var canJump = false;
 			var crouch = false;
 			var sprint = false;
+			var health = 100;
+			var stamina = 1000;
+			var sprintTimeout = false;
 
 			var prevTime = performance.now();
 			var velocity = new THREE.Vector3();
@@ -244,6 +247,9 @@ var camera, scene, renderer, controls;
 
 				if ( controlsEnabled === true ) {
 
+					document.getElementById("health").innerHTML = "Health Points: " + health;
+					document.getElementById("stamina").innerHTML = "Stamina: " + stamina/10;
+
 					raycaster.ray.origin.copy( controls.getObject().position );
 					raycaster.ray.origin.y -= 10;
 
@@ -266,11 +272,25 @@ var camera, scene, renderer, controls;
 					if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
 					if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
 
-					if( sprint ) {
+					if( sprint && stamina > 2 && !sprintTimeout ) {
 						if( moveForward ){
 							velocity.z = velocity.z * 1.11;
+							stamina -= 3;
 						}
 					}
+					else {
+						if( !(( moveForward || moveBackward ) && !( moveForward && moveBackward )) && !(( moveLeft || moveRight ) && !( moveLeft && moveRight )) ) 
+							if( stamina < 1000 ) stamina += 2; else stamina = 1000;
+						
+					}
+
+					//if( !stamina ) {
+					//	sprintTimeout = true;
+					//}
+
+					//if( stamina > 30 ) {
+					//	sprintTimeOut = false;
+					//}
 
 					if( crouch ) {
 						if( camera.position.y > -5 ) camera.position.y -= 0.5;
@@ -301,6 +321,10 @@ var camera, scene, renderer, controls;
 
 						canJump = true;
 
+					}
+
+					if ( !health ) {
+						location.reload();
 					}
 
 					prevTime = time;
