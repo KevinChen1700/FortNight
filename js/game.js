@@ -100,8 +100,6 @@ function animate() {
 	requestAnimationFrame(animate);
 
 	if (controlsEnabled === true) {
-
-
 		raycaster.ray.origin.copy(controls.getObject().position);
 		raycaster.ray.origin.y -= 10;
 
