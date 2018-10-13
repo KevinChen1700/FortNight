@@ -40,6 +40,12 @@ function init() {
 				if (canJump === true) velocity.y += 350;
 				canJump = false;
 				break;
+			case 67: //c
+				crouch = true;
+				break;
+			case 16: //shift
+				sprint = true;
+				break;
 
 		}
 
@@ -67,6 +73,12 @@ function init() {
 			case 39: // right
 			case 68: // d
 				moveRight = false;
+				break;
+			case 67: //c
+				crouch = false;
+				break;
+			case 16: //shift
+				sprint = false;
 				break;
 
 		}
