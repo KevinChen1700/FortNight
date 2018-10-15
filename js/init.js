@@ -129,16 +129,6 @@ function init() {
 		console.log(mesh);
 	});
 
-	//lantern v2
-	// var mtlLoader = new THREE.MTLLoader();
-	// mtlLoader.load("models/Lantern.mtl",function(materials	){
-	// 	materials.preload();
-	// 	var objLoader = new THREE.OBJLoader();
-	// 	objLoader.load("models/Lantern.obj",function(mesh){
-	// 		scene.add(mesh);
-	// 	});
-	// });
-
 	// objects
 
 	// var boxGeometry = new THREE.BoxBufferGeometry(20, 20, 20);
