@@ -76,6 +76,9 @@ var moveRight = false;
 var canJump = false;
 var crouch = false;
 var sprint = false;
+var health = 100;
+var stamina = 1000;
+var sprintTimeout = false;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -135,10 +138,17 @@ function animate() {
 		if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
 		if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
 
-		if (sprint) {
-			if (moveForward) {
+
+		if( sprint && stamina > 2 && !sprintTimeout ) {
+			if( moveForward ){
 				velocity.z = velocity.z * 1.11;
+				stamina -= 3;
 			}
+		}
+		else {
+			if( !(( moveForward || moveBackward ) && !( moveForward && moveBackward )) && !(( moveLeft || moveRight ) && !( moveLeft && moveRight )) )
+				if( stamina < 1000 ) stamina += 2; else stamina = 1000;
+
 		}
 
 		if (crouch) {
@@ -177,6 +187,10 @@ function animate() {
 		}
 
 
+
+		if (!health) {
+			location.reload();
+		}
 
 		prevTime = time;
 
