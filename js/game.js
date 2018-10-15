@@ -78,7 +78,6 @@ var crouch = false;
 var sprint = false;
 var health = 100;
 var stamina = 1000;
-var sprintTimeout = false;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -103,6 +102,9 @@ function animate() {
 	requestAnimationFrame(animate);
 
 	if (controlsEnabled === true) {
+		document.getElementById("health").innerHTML = "HP Points: " + health;
+		document.getElementById("stamina").innerHTML = "Stamina: " + stamina / 10;
+
 		raycaster.ray.origin.copy(controls.getObject().position);
 		raycaster.ray.origin.y -= 10;
 
@@ -139,7 +141,7 @@ function animate() {
 		if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
 
 
-		if( sprint && stamina > 2 && !sprintTimeout ) {
+		if( sprint && stamina > 2 ) {
 			if( moveForward ){
 				velocity.z = velocity.z * 1.11;
 				stamina -= 3;
