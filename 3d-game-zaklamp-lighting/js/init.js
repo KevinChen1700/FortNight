@@ -119,15 +119,17 @@ function init() {
 	scene.add(floor);
 
 	//lantern
-	var lantaarn = new THREE.Group();
-	
-	loadOBJModel("models/","Lantern.obj","models/","Lantern.mtl",(mesh) =>{
+	var lantaarn = new THREE.Mesh();
 
-		lantaarn.add(mesh);
+	loadOBJModel("models/", "test.obj", "models/", "test.mtl", (mesh) => {
+		mesh.scale.set(1, 1, 1);
+		mesh.children[0].material = new THREE.MeshBasicMaterial({ color: 0xffffff});
+		mesh.position.set(0, 2, 0);
+		scene.add(mesh);
+		console.log(mesh);
 	});
-	scene.add(lantaarn);
-	
-    //lantern v2
+
+	//lantern v2
 	// var mtlLoader = new THREE.MTLLoader();
 	// mtlLoader.load("models/Lantern.mtl",function(materials	){
 	// 	materials.preload();
@@ -136,7 +138,7 @@ function init() {
 	// 		scene.add(mesh);
 	// 	});
 	// });
-	
+
 	// objects
 
 	// var boxGeometry = new THREE.BoxBufferGeometry(20, 20, 20);
