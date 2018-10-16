@@ -3,6 +3,7 @@ var camera, scene, renderer, controls;
 var objects = [];
 
 var raycaster, raycasterx, raycasterz, raycasterx2, raycasterz2;
+var storedX, storedY, storedZ;
 
 var blocker = document.getElementById('blocker');
 var instructions = document.getElementById('instructions');
@@ -98,7 +99,6 @@ function onWindowResize() {
 }
 
 function animate() {
-
 	requestAnimationFrame(animate);
 
 	if (controlsEnabled === true) {
@@ -170,14 +170,18 @@ function animate() {
 			canJump = true;
 
 		}
+
 		if (touchingWall) {
-			velocity.z *= -1;
-			velocity.x *= -1;
+			controls.getObject().position.x = storedX;
+			controls.getObject().position.y = storedY;
+			controls.getObject().position.z = storedZ;
 		}
+		storedX = controls.getObject().position.x;
+		storedY = controls.getObject().position.y;
+		storedZ = controls.getObject().position.z;
 		controls.getObject().translateX(velocity.x * delta);
 		controls.getObject().translateY(velocity.y * delta);
 		controls.getObject().translateZ(velocity.z * delta);
-
 
 		if (controls.getObject().position.y < 10) {
 
@@ -195,9 +199,7 @@ function animate() {
 		}
 
 		prevTime = time;
-
 	}
 
 	renderer.render(scene, camera);
-
 }
