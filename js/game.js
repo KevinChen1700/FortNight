@@ -4,6 +4,8 @@ var camera, scene, renderer, controls;
 
 			var raycaster;
 
+			var lightLantaarn;
+
 			var blocker = document.getElementById( 'blocker' );
 			var instructions = document.getElementById( 'instructions' );
 
@@ -83,8 +85,35 @@ var camera, scene, renderer, controls;
 			var vertex = new THREE.Vector3();
 			var color = new THREE.Color();
 
+			// Models index
+            var models = {
+	        lantaarn: {
+		    obj:"models/lantern.obj",
+		    mtl:"models/lantern.mtl",
+		    mesh: null
+			},
+			lightLantaarn:{
+				licht: null
+			}
+			};
+			
+			// Meshes index
+            var meshes = {};
+
 			init();
 			animate();
+
+			function lightLantaarnLoaded(){
+				meshes["lightLantaarn"] = models.lightLantaarn.licht.clone();
+				scene.add(meshes["lightLantaarn"]);
+			}
+
+			function onResourcesLoaded(){
+				meshes["lantaarn"] = models.lantaarn.mesh.clone();
+				meshes["lantaarn"].position.set(0, 10, 0);
+				meshes["lantaarn"].scale.set(2.5,4.5,4.5);
+				scene.add(meshes["lantaarn"]);
+			}
 
 			function onWindowResize() {
 
@@ -97,9 +126,13 @@ var camera, scene, renderer, controls;
 
 			function animate() {
 
+				
+
 				requestAnimationFrame( animate );
 
 				if ( controlsEnabled === true ) {
+
+					
 
 					raycaster.ray.origin.copy( controls.getObject().position );
 					raycaster.ray.origin.y -= 10;
@@ -159,6 +192,31 @@ var camera, scene, renderer, controls;
 						canJump = true;
 
 					}
+
+					//lantaarn in first person view
+					meshes["lantaarn"].position.set(
+						controls.getObject().position.x ,
+						controls.getObject().position.y ,
+						controls.getObject().position.z 
+					);
+
+					meshes["lantaarn"].rotation.set(
+						controls.getObject().rotation.x,
+						controls.getObject().rotation.y,
+						controls.getObject().rotation.z,
+					);
+
+					//licht van het lantaarn
+					meshes["lightLantaarn"].position.set(
+						controls.getObject().position.x ,
+						controls.getObject().position.y ,
+						controls.getObject().position.z 
+					);
+					meshes["lightLantaarn"].rotation.set(
+						controls.getObject().rotation.x ,
+						controls.getObject().rotation.y ,
+						controls.getObject().rotation.z 
+					);
 
 					prevTime = time;
 
