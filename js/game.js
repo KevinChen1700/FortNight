@@ -78,6 +78,9 @@ var crouch = false;
 var sprint = false;
 var health = 100;
 var stamina = 1000;
+var monster;
+var monsterTeleport = false;
+var achtervolg = false;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -118,6 +121,8 @@ function animate() {
 		var intersectionsz = raycasterz.intersectObjects(objects);
 		var intersectionsx2 = raycasterx2.intersectObjects(objects);
 		var intersectionsz2 = raycasterz2.intersectObjects(objects);
+
+
 
 		var onObject = intersections.length > 0;
 		var touchingWall = false;
@@ -163,6 +168,27 @@ function animate() {
 			if (camera.position.y < 0) camera.position.y += 0.5;
 			else camera.position.y = 0;
 		}
+
+		if (Math.abs(controls.getObject().position.x - monster.position.x) < 12 && Math.abs(controls.getObject().position.z - monster.position.z) < 12) {
+			health -= 1;
+		}
+
+		if (monsterTeleport) {
+			achtervolg = true;
+		}
+
+		if (achtervolg) {
+			achtervolg = false;
+			var interval = window.setInterval(function(){
+				if(!sprint) {
+					monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z + 10);
+				}
+				else {
+					window.clearInterval(interval);
+				}
+			}, 3000);
+		}
+
 
 		if (onObject === true) {
 

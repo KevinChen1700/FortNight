@@ -13,6 +13,13 @@ function init() {
 	controls = new THREE.PointerLockControls(camera);
 	scene.add(controls.getObject());
 
+		
+	monster = new Monster();
+	monster.position.set(10, 0, 10);
+
+	scene.add(monster);
+	objects.push(monster);
+
 	var onKeyDown = function (event) {
 
 		switch (event.keyCode) {
@@ -45,6 +52,9 @@ function init() {
 				break;
 			case 16: //shift
 				sprint = true;
+				break;
+			case 88: //x
+				monsterTeleport = true;
 				break;
 
 		}
@@ -79,6 +89,9 @@ function init() {
 				break;
 			case 16: //shift
 				sprint = false;
+				break;
+			case 88: //x
+				monsterTeleport = false;
 				break;
 
 		}
@@ -168,6 +181,9 @@ function init() {
 
 	//
 
+
+
+
 	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -176,5 +192,6 @@ function init() {
 	//
 
 	window.addEventListener('resize', onWindowResize, false);
+
 
 }
