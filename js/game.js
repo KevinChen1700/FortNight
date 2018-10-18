@@ -243,13 +243,8 @@ function animate() {
 		//licht van het lantaarn
 		meshes["lightLantaarn"].position.set(
 			controls.getObject().position.x,
-			controls.getObject().position.y,
+			controls.getObject().position.y + 4,
 			controls.getObject().position.z
-		);
-		meshes["lightLantaarn"].rotation.set(
-			controls.getObject().rotation.x,
-			controls.getObject().rotation.y,
-			controls.getObject().rotation.z
 		);
 		prevTime = time;
 	}
