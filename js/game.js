@@ -5,6 +5,8 @@ var objects = [];
 var raycaster, raycasterx, raycasterz, raycasterx2, raycasterz2;
 var storedX, storedY, storedZ;
 
+var lightLantaarn;
+
 var blocker = document.getElementById('blocker');
 var instructions = document.getElementById('instructions');
 
@@ -86,8 +88,36 @@ var direction = new THREE.Vector3();
 var vertex = new THREE.Vector3();
 var color = new THREE.Color();
 
+// Models index
+var models = {
+	lantaarn: {
+		obj: "models/lantern.obj",
+		mtl: "models/lantern.mtl",
+		mesh: null
+	},
+	lightLantaarn: {
+		licht: null
+	}
+};
+
+// Meshes index
+var meshes = {};
+
+
 init();
 animate();
+
+function lightLantaarnLoaded() {
+	meshes["lightLantaarn"] = models.lightLantaarn.licht.clone();
+	scene.add(meshes["lightLantaarn"]);
+}
+
+function onResourcesLoaded() {
+	meshes["lantaarn"] = models.lantaarn.mesh.clone();
+	meshes["lantaarn"].position.set(0, 10, 0);
+	meshes["lantaarn"].scale.set(2.5, 4.5, 4.5);
+	scene.add(meshes["lantaarn"]);
+}
 
 function onWindowResize() {
 
@@ -141,15 +171,15 @@ function animate() {
 		if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
 
 
-		if( sprint && stamina > 2 ) {
-			if( moveForward ){
+		if (sprint && stamina > 2) {
+			if (moveForward) {
 				velocity.z = velocity.z * 1.11;
 				stamina -= 3;
 			}
 		}
 		else {
-			if( !(( moveForward || moveBackward ) && !( moveForward && moveBackward )) && !(( moveLeft || moveRight ) && !( moveLeft && moveRight )) )
-				if( stamina < 1000 ) stamina += 2; else stamina = 1000;
+			if (!((moveForward || moveBackward) && !(moveForward && moveBackward)) && !((moveLeft || moveRight) && !(moveLeft && moveRight)))
+				if (stamina < 1000) stamina += 2; else stamina = 1000;
 
 		}
 
@@ -197,7 +227,30 @@ function animate() {
 		if (!health) {
 			location.reload();
 		}
+		//lantaarn in first person view
+		meshes["lantaarn"].position.set(
+			controls.getObject().position.x,
+			controls.getObject().position.y,
+			controls.getObject().position.z
+		);
 
+		meshes["lantaarn"].rotation.set(
+			controls.getObject().rotation.x,
+			controls.getObject().rotation.y,
+			controls.getObject().rotation.z,
+		);
+
+		//licht van het lantaarn
+		meshes["lightLantaarn"].position.set(
+			controls.getObject().position.x,
+			controls.getObject().position.y,
+			controls.getObject().position.z
+		);
+		meshes["lightLantaarn"].rotation.set(
+			controls.getObject().rotation.x,
+			controls.getObject().rotation.y,
+			controls.getObject().rotation.z
+		);
 		prevTime = time;
 	}
 

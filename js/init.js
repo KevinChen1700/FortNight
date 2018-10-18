@@ -1,17 +1,26 @@
 function init() {
 
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-
+	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 101);
+	camera.position.x = -4;
+	camera.position.z = 3.5;
+	
+    
 	scene = new THREE.Scene();
-	scene.background = new THREE.Color(0x000000);
-	scene.fog = new THREE.Fog(0x000000, 0, 50);
+	scene.background = new THREE.Color(000000);
+	scene.fog = new THREE.Fog(000000, 0, 100);
 
-	var light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.75);
+	var light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1.0);
 	light.position.set(0.5, 1, 0.75);
 	scene.add(light);
 
+	lightLantaarn = new THREE.PointLight(0xE7D30F, 1.0, 10);
+	lightLantaarn.position.set(5,5,-5);
+	models.lightLantaarn.licht = lightLantaarn;
+	lightLantaarnLoaded();
+
 	controls = new THREE.PointerLockControls(camera);
 	scene.add(controls.getObject());
+
 
 	var onKeyDown = function (event) {
 
@@ -129,10 +138,18 @@ function init() {
 
 	floorGeometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
-	var floorMaterial = new THREE.MeshBasicMaterial({ vertexColors: THREE.VertexColors });
+	var floorMaterial = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors });
 
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	scene.add(floor);
+	
+	//lantaarn inladen
+	loadOBJModel("models/", "lantern.obj", "models/", "lantern.mtl", (mesh) => {
+		models.lantaarn.mesh = mesh;
+
+		onResourcesLoaded();
+
+	});
 
 	// objects
 
