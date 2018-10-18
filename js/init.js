@@ -184,13 +184,24 @@ function init() {
 
 	// }
 
-	var wall = new THREE.PlaneGeometry(100,100);
-	var material = new THREE.MeshPhongMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-	var plane = new THREE.Mesh(wall,material);
-	plane.position.x = 10;
-	plane.position.z = 10;
-	scene.add(plane);
-	objects.push(plane);
+	// var wall = new THREE.PlaneGeometry(100, 100);
+	 var material = new THREE.MeshPhongMaterial({ color: 0xffff00, side: THREE.DoubleSide });
+	// var plane = new THREE.Mesh(wall, material);
+	// plane.position.x = 10;
+	// plane.position.z = 10;
+	// scene.add(plane);
+	// objects.push(plane);
+
+	var walls = [];
+	walls.push(new THREE.Mesh(new THREE.PlaneGeometry(100,100), material));
+	walls[0].position.x = 10;
+	walls[0].position.z = 10;
+	console.log(walls[0]);
+
+	walls.forEach(function(element){
+		objects.push(element);
+		scene.add(element);
+	});
 
 	//
 
