@@ -18,22 +18,23 @@ if (havePointerLock) {
 
 	var pointerlockchange = function (event) {
 
-		if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
-			if (health){
-			controlsEnabled = true;
-			controls.enabled = true;
+		if (health) {
+			if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
 
-			blocker.style.display = 'none';
+				controlsEnabled = true;
+				controls.enabled = true;
+
+				blocker.style.display = 'none';
+
+			} else {
+
+				controls.enabled = false;
+
+				blocker.style.display = 'block';
+
+				instructions.style.display = '';
+
 			}
-
-		} else {
-
-			controls.enabled = false;
-
-			blocker.style.display = 'block';
-
-			instructions.style.display = '';
-
 		}
 
 	};
@@ -148,15 +149,15 @@ function animate() {
 		if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
 
 
-		if( sprint && stamina > 2 ) {
-			if( moveForward ){
+		if (sprint && stamina > 2) {
+			if (moveForward) {
 				velocity.z = velocity.z * 1.11;
 				stamina -= 3;
 			}
 		}
 		else {
-			if( !(( moveForward || moveBackward ) && !( moveForward && moveBackward )) && !(( moveLeft || moveRight ) && !( moveLeft && moveRight )) )
-				if( stamina < 1000 ) stamina += 2; else stamina = 1000;
+			if (!((moveForward || moveBackward) && !(moveForward && moveBackward)) && !((moveLeft || moveRight) && !(moveLeft && moveRight)))
+				if (stamina < 1000) stamina += 2; else stamina = 1000;
 
 		}
 
@@ -182,8 +183,8 @@ function animate() {
 		if (achtervolg) {
 			achtervolg = false;
 			monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z + 10);
-			var interval = window.setInterval(function(){
-				if(Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 100) {			
+			var interval = window.setInterval(function () {
+				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 100) {
 					window.clearInterval(interval);
 					monster.position.set(0, 100, 0);
 				}
