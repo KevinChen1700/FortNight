@@ -180,8 +180,16 @@ function init() {
 	}
 
 	//
+	var lastPositionx = controls.getObject().position.x;
+	var lastPositionz = controls.getObject().position.z;
 
-
+	window.setInterval(function(){
+		if(Math.sqrt(Math.pow(controls.getObject().position.x - lastPositionx, 2) + Math.pow(controls.getObject().position.z - lastPositionz, 2)) < 10) {
+			achtervolg = true;
+		}
+		lastPositionx = controls.getObject().position.x;
+		lastPositionz = controls.getObject().position.z;
+	}, 5000);
 
 
 	renderer = new THREE.WebGLRenderer({ antialias: true });

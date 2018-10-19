@@ -6,6 +6,7 @@ var raycaster, raycasterx, raycasterz, raycasterx2, raycasterz2;
 
 var blocker = document.getElementById('blocker');
 var instructions = document.getElementById('instructions');
+var deathscreen = document.getElementById('deathscreen');
 
 // http://www.html5rocks.com/en/tutorials/pointerlock/intro/
 
@@ -18,11 +19,12 @@ if (havePointerLock) {
 	var pointerlockchange = function (event) {
 
 		if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
-
+			if (health){
 			controlsEnabled = true;
 			controls.enabled = true;
 
 			blocker.style.display = 'none';
+			}
 
 		} else {
 
@@ -179,12 +181,14 @@ function animate() {
 
 		if (achtervolg) {
 			achtervolg = false;
+			monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z + 10);
 			var interval = window.setInterval(function(){
-				if(!sprint) {
-					monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z + 10);
+				if(Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 100) {			
+					window.clearInterval(interval);
+					monster.position.set(0, 100, 0);
 				}
 				else {
-					window.clearInterval(interval);
+					monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z + 10);
 				}
 			}, 3000);
 		}
@@ -217,7 +221,11 @@ function animate() {
 
 
 		if (!health) {
-			location.reload();
+			document.getElementById("health").innerHTML = "HP Points: " + health;
+			controlsEnabled = false;
+			controls.enabled = false;
+			blocker.style.display = 'block';
+			deathscreen.style.display = '';
 		}
 
 		prevTime = time;
