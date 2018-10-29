@@ -136,6 +136,12 @@ function animate() {
 		var time = performance.now();
 		var delta = (time - prevTime) / 1000;
 
+		//monster.rotation.set(0, (Math.atan((controls.getObject().position.z - monster.position.z) / (controls.getObject().position.x - monster.position.x)) * Math.PI / 180), 0);
+		//monster.rotation.y = Math.atan((controls.getObject().position.z - monster.position.z) / -(controls.getObject().position.x - monster.position.x)) * Math.PI / 1.80;
+		//console.log(Math.atan((controls.getObject().position.z - monster.position.z) / (controls.getObject().position.x - monster.position.x)) * Math.PI / 1.80);
+		console.log(monster.rotation.y);
+		monster.lookAt(controls.getObject().position);
+
 		velocity.x -= velocity.x * 10.0 * delta;
 		velocity.z -= velocity.z * 10.0 * delta;
 
@@ -182,14 +188,14 @@ function animate() {
 
 		if (achtervolg) {
 			achtervolg = false;
-			monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z + 10);
+			monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
 			var interval = window.setInterval(function () {
 				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 100) {
 					window.clearInterval(interval);
 					monster.position.set(0, 100, 0);
 				}
 				else {
-					monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z + 10);
+					monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
 				}
 			}, 3000);
 		}

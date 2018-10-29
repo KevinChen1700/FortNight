@@ -56,6 +56,8 @@ function init() {
 			case 88: //x
 				monsterTeleport = true;
 				break;
+			case 82: //r
+				if(!health) location.reload();
 
 		}
 
