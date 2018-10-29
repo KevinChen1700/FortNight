@@ -7,7 +7,7 @@ function init() {
     
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(000000);
-	scene.fog = new THREE.Fog(000000, 0, 100);
+	scene.fog = new THREE.Fog(000000, 0, 50);
 
 	var light = new THREE.HemisphereLight(0x3e4247, 0x3e4247, 1.0);
 	light.position.set(0.5, 1, 0.75);
