@@ -267,6 +267,56 @@ for (i = horizontal.length; i < vertical.length + horizontal.length; i++) {
 	walls[i].castShadow = true;
 }//end of loop
 
+function loadObjects () {
+   
+   //alle modellen inladen
+   loadOBJModel("models/", "lantern.obj", "models/", "lantern.mtl", (mesh) => {
+	   mesh.scale.set(2.5,4.5,4.5);
+	   mesh.material = new THREE.MeshBasicMaterial;
+	   models.lantaarn.mesh = mesh;
+	   scene.add(models.lantaarn.mesh);
+   });
+   loadOBJModel("models/", "bookshelf.obj", "models/", "bookshelf.mtl", (mesh) => {
+	   mesh.scale.set(8,8,8);
+	   mesh.material = new THREE.MeshBasicMaterial;
+	   mesh.position.set(-26,2,32);
+	   scene.add(mesh);
+   });
+   loadOBJModel("models/", "lamp.obj", "models/", "lamp.mtl", (mesh) => {
+	   mesh.scale.set(2.5,2,2);
+	   mesh.material = new THREE.MeshBasicMaterial;
+	   mesh.position.set(-25,12,15);
+	   scene.add(mesh);
+   });
+   loadOBJModel("models/", "shackles.obj", "models/", "shackles.mtl", (mesh) => {
+	   mesh.scale.set(0.5,0.5,0.5);
+	   mesh.material = new THREE.MeshBasicMaterial;
+	   mesh.position.set(-22,0,-35);
+	   scene.add(mesh);
+   });
+   loadOBJModel("models/", "window.obj", "models/", "window.mtl", (mesh) => {
+	   mesh.scale.set(15,15,15);
+	   mesh.material = new THREE.MeshBasicMaterial;
+	   mesh.rotation.z = 1.5;
+	   mesh.position.set(15,1,-35);
+	   scene.add(mesh);
+   });
+   loadOBJModel("models/", "window2.obj", "models/", "window2.mtl", (mesh) => {
+	   mesh.scale.set(40,40,40);
+	   mesh.material = new THREE.MeshBasicMaterial;
+	   mesh.position.set(68,5,-15);
+	   scene.add(mesh);
+   });
+   loadOBJModel("models/", "benchBroken.obj", "models/", "benchBroken.mtl", (mesh) => {
+	   mesh.scale.set(20,20,20);
+	   mesh.material = new THREE.MeshBasicMaterial;
+	   mesh.position.set(65,5,25);
+	   mesh.rotation.set(1,0,0);
+	   scene.add(mesh);
+   });
+
+}
+
 
 	
 	

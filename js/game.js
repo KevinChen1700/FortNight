@@ -96,34 +96,13 @@ var color = new THREE.Color();
 
 // Models index
 var models = {
-	lantaarn: {
-		obj: "models/lantern.obj",
-		mtl: "models/lantern.mtl",
-		mesh: null
-	},
-	lightLantaarn: {
-		licht: null
-	}
-};
-
-// Meshes index
-var meshes = {};
-
+	lantaarn: { mesh: null },
+	lightLantaarn:{ licht: null }
+	
+	};
 
 init();
 animate();
-
-function lightLantaarnLoaded() {
-	meshes["lightLantaarn"] = models.lightLantaarn.licht.clone();
-	scene.add(meshes["lightLantaarn"]);
-}
-
-function onResourcesLoaded() {
-	meshes["lantaarn"] = models.lantaarn.mesh.clone();
-	meshes["lantaarn"].position.set(0, 10, 0);
-	meshes["lantaarn"].scale.set(2.5, 4.5, 4.5);
-	scene.add(meshes["lantaarn"]);
-}
 
 function onWindowResize() {
 
@@ -269,20 +248,20 @@ function animate() {
 		}
 
 		//lantaarn in first person view
-		meshes["lantaarn"].position.set(
+		models.lantaarn.mesh.position.set(
 			controls.getObject().position.x,
 			controls.getObject().position.y,
 			controls.getObject().position.z
 		);
 
-		meshes["lantaarn"].rotation.set(
+		models.lantaarn.mesh.rotation.set(
 			controls.getObject().rotation.x,
 			controls.getObject().rotation.y,
 			controls.getObject().rotation.z,
 		);
 
 		//licht van het lantaarn
-		meshes["lightLantaarn"].position.set(
+		models.lightLantaarn.licht.position.set(
 			controls.getObject().position.x,
 			controls.getObject().position.y + 4,
 			controls.getObject().position.z

@@ -13,10 +13,16 @@ function init() {
 	light.position.set(0.5, 1, 0.75);
 	scene.add(light);
 
-	lightLantaarn = new THREE.PointLight(0xffffff, 1, 1);
-	lightLantaarn.position.set(5,5,-5);
+	lightLantaarn = new THREE.PointLight(0xffffff, 1, 100);
+	lightLantaarn.castShadow = true;
+	
+	//Set up shadow properties for the light
+    lightLantaarn.shadow.mapSize.width = 550; 
+    lightLantaarn.shadow.mapSize.height = 550; 
+    lightLantaarn.shadow.camera.near = 0.5;
+	lightLantaarn.shadow.camera.far = 500;
 	models.lightLantaarn.licht = lightLantaarn;
-	lightLantaarnLoaded();
+	scene.add(models.lightLantaarn.licht);
 
 	controls = new THREE.PointerLockControls(camera);
 	scene.add(controls.getObject());
@@ -153,6 +159,7 @@ function init() {
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	floor.position.y= -0.5;
 	floor.rotation.x= Math.PI/2;
+	floor.receiveShadow = true;
 	scene.add(floor);
 
 
@@ -174,14 +181,7 @@ function init() {
 	ceiling.rotation.x= Math.PI/2;
 	scene.add(ceiling);
 	
-	//lantaarn inladen
-	loadOBJModel("models/", "lantern.obj", "models/", "lantern.mtl", (mesh) => {
-		mesh.material = new THREE.MeshBasicMaterial;
-		models.lantaarn.mesh = mesh;
-
-		onResourcesLoaded();
-
-	});
+	loadObjects();
 
 	loader = new THREE.JSONLoader();
 
@@ -212,6 +212,9 @@ function init() {
 	//
 
 	renderer = new THREE.WebGLRenderer({ antialias: true });
+	renderer.shadowMap.enabled = true;
+	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+	
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
