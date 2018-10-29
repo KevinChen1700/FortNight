@@ -9,6 +9,7 @@ var lightLantaarn;
 
 var blocker = document.getElementById('blocker');
 var instructions = document.getElementById('instructions');
+var deathscreen = document.getElementById('deathscreen');
 
 // http://www.html5rocks.com/en/tutorials/pointerlock/intro/
 
@@ -20,21 +21,23 @@ if (havePointerLock) {
 
 	var pointerlockchange = function (event) {
 
-		if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
+		if (health) {
+			if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
 
-			controlsEnabled = true;
-			controls.enabled = true;
+				controlsEnabled = true;
+				controls.enabled = true;
 
-			blocker.style.display = 'none';
+				blocker.style.display = 'none';
 
-		} else {
+			} else {
 
-			controls.enabled = false;
+				controls.enabled = false;
 
-			blocker.style.display = 'block';
+				blocker.style.display = 'block';
 
-			instructions.style.display = '';
+				instructions.style.display = '';
 
+			}
 		}
 
 	};
@@ -81,6 +84,9 @@ var crouch = false;
 var sprint = false;
 var health = 100;
 var stamina = 1000;
+var monster;
+var monsterTeleport = false;
+var achtervolg = false;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -149,6 +155,8 @@ function animate() {
 		var intersectionsx2 = raycasterx2.intersectObjects(objects);
 		var intersectionsz2 = raycasterz2.intersectObjects(objects);
 
+
+
 		var onObject = intersections.length > 0;
 		var touchingWall = false;
 		if (intersectionsx.length > 0 || intersectionsz.length > 0 || intersectionsx2.length > 0 || intersectionsz2.length > 0) {
@@ -157,6 +165,8 @@ function animate() {
 
 		var time = performance.now();
 		var delta = (time - prevTime) / 1000;
+
+		monster.lookAt(controls.getObject().position.x, 0, controls.getObject().position.z);
 
 		velocity.x -= velocity.x * 10.0 * delta;
 		velocity.z -= velocity.z * 10.0 * delta;
@@ -194,6 +204,29 @@ function animate() {
 			else camera.position.y = 0;
 		}
 
+		if (Math.abs(controls.getObject().position.x - monster.position.x) < 12 && Math.abs(controls.getObject().position.z - monster.position.z) < 12) {
+			//health -= 1;
+		}
+
+		if (monsterTeleport) {
+			achtervolg = true;
+		}
+
+		if (achtervolg) {
+			achtervolg = false;
+			//monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
+			var interval = window.setInterval(function () {
+				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 100) {
+					window.clearInterval(interval);
+					monster.position.set(0, 100, 0);
+				}
+				else {
+					//monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
+				}
+			}, 3000);
+		}
+
+
 		if (onObject === true) {
 
 			velocity.y = Math.max(0, velocity.y);
@@ -226,9 +259,15 @@ function animate() {
 
 		}
 
+
 		if (!health) {
-			location.reload();
+			document.getElementById("health").innerHTML = "HP Points: " + health;
+			controlsEnabled = false;
+			controls.enabled = false;
+			blocker.style.display = 'block';
+			deathscreen.style.display = '';
 		}
+
 		//lantaarn in first person view
 		meshes["lantaarn"].position.set(
 			controls.getObject().position.x,

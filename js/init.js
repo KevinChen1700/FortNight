@@ -21,6 +21,12 @@ function init() {
 	controls = new THREE.PointerLockControls(camera);
 	scene.add(controls.getObject());
 
+	monster = new Monster();
+	monster.position.set(10, 0, 10);
+
+	scene.add(monster);
+	objects.push(monster);
+
 
 	var onKeyDown = function (event) {
 
@@ -56,8 +62,13 @@ function init() {
 				sprint = true;
 				break;
 			case 70: //f
-			fly = true;
-			break;
+				fly = true;
+				break;
+			case 88: //x
+				monsterTeleport = true;
+				break;
+			case 82: //r
+				if(!health) location.reload();
 
 		}
 
@@ -91,6 +102,9 @@ function init() {
 				break;
 			case 16: //shift
 				sprint = false;
+				break;
+			case 88: //x
+				monsterTeleport = false;
 				break;
 
 		}
@@ -185,7 +199,16 @@ function init() {
 		scene.add(element);
 	});
 
-	
+	var lastPositionx = controls.getObject().position.x;
+	var lastPositionz = controls.getObject().position.z;
+
+	window.setInterval(function(){
+		if(Math.sqrt(Math.pow(controls.getObject().position.x - lastPositionx, 2) + Math.pow(controls.getObject().position.z - lastPositionz, 2)) < 10) {
+			achtervolg = true;
+		}
+		lastPositionx = controls.getObject().position.x;
+		lastPositionz = controls.getObject().position.z;
+	}, 5000);	
 	//
 
 	renderer = new THREE.WebGLRenderer({ antialias: true });
