@@ -10,7 +10,6 @@ var lightLantaarn;
 var blocker = document.getElementById('blocker');
 var instructions = document.getElementById('instructions');
 
-// http://www.html5rocks.com/en/tutorials/pointerlock/intro/
 
 var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
@@ -81,6 +80,7 @@ var crouch = false;
 var sprint = false;
 var health = 100;
 var stamina = 1000;
+var fly = false;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -200,6 +200,10 @@ function animate() {
 			canJump = true;
 
 		}
+		
+		if (fly) {
+			camera.position.y =40;
+		}
 
 		if (touchingWall) {
 			controls.getObject().position.x = storedX;
@@ -222,7 +226,21 @@ function animate() {
 
 		}
 
+		var loader = new THREE.JSONLoader();
+		loader.load("models/json/doors.json", handle_load);
 
+		var mixer;
+		function handle_load(geometry, materials){
+
+			var material = new THREE.MeshLambertMaterial({morphTarget});
+			var mesh = new THREE.Mesh(geometry, material);
+			scene.add(mesh);
+			mesh.location.z = 0;
+			
+			//mixer = new THREE.AnimationMixer(mesh);
+
+			//var clp = THREE.AnimationClip.
+		}
 
 		if (!health) {
 			location.reload();

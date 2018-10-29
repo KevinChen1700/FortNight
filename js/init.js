@@ -9,11 +9,11 @@ function init() {
 	scene.background = new THREE.Color(000000);
 	scene.fog = new THREE.Fog(000000, 0, 100);
 
-	var light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1.0);
+	var light = new THREE.HemisphereLight(0x3e4247, 0x3e4247, 1.0);
 	light.position.set(0.5, 1, 0.75);
 	scene.add(light);
 
-	lightLantaarn = new THREE.PointLight(0xffffff, 1, 100);
+	lightLantaarn = new THREE.PointLight(0xffffff, 1, 1);
 	lightLantaarn.position.set(5,5,-5);
 	models.lightLantaarn.licht = lightLantaarn;
 	lightLantaarnLoaded();
@@ -55,6 +55,9 @@ function init() {
 			case 16: //shift
 				sprint = true;
 				break;
+			case 70: //f
+			fly = true;
+			break;
 
 		}
 
@@ -103,45 +106,59 @@ function init() {
 	raycasterx2 = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(-1, 0, 0), 0, 5);
 	raycasterz2 = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, 0, -1), 0, 5);
 
-	// floor
+	//AFRICA
+	var listener = new THREE.AudioListener();
+	camera.add( listener );
+
+// create a global audio source
+	var sound = new THREE.Audio( listener );
+
+// load a sound and set it as the Audio object's buffer AFRICAAAAAAAAAAAAAAAAAAAAAAAAAA
+	var audioLoader = new THREE.AudioLoader();
+	audioLoader.load( 'sounds/Toto-Africa.mp3', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 0.5 );
+	sound.play();
+});
+	// floor number : 1,4,10,23,39 best,,240best,241,243
+	
+	var floorTexture = new THREE.ImageUtils.loadTexture('textures/pattern_41/specular.png')
+	//var floorTexture = new THREE.ImageUtils.loadTexture('textures/cookiehunger.png')//lolzies
+	
+	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+	floorTexture.repeat.set(100,100);
+
+	var floorMaterial = new THREE.MeshBasicMaterial({
+		map:floorTexture,
+		side:THREE.DoubleSide
+		});
 
 	var floorGeometry = new THREE.PlaneBufferGeometry(2000, 2000, 100, 100);
-	floorGeometry.rotateX(- Math.PI / 2);
-
-	// vertex displacement
-
-	var position = floorGeometry.attributes.position;
-
-	for (var i = 0, l = position.count; i < l; i++) {
-
-		vertex.fromBufferAttribute(position, i);
-
-		vertex.x += Math.random() * 20 - 10;
-		vertex.y += Math.random() * 2;
-		vertex.z += Math.random() * 20 - 10;
-
-		position.setXYZ(i, vertex.x, vertex.y, vertex.z);
-
-	}
-
-	floorGeometry = floorGeometry.toNonIndexed(); // ensure each face has unique vertices
-
-	position = floorGeometry.attributes.position;
-	var colors = [];
-
-	for (var i = 0, l = position.count; i < l; i++) {
-
-		color.setHSL(Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75);
-		colors.push(color.r, color.g, color.b);
-
-	}
-
-	floorGeometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-	var floorMaterial = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors });
-
+	
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+	floor.position.y= -0.5;
+	floor.rotation.x= Math.PI/2;
 	scene.add(floor);
+
+
+	//cealing	
+	//var ceilingTexture = new THREE.ImageUtils.loadTexture('textures/cookienightmare.jpg')//lolzies
+	var ceilingTexture = new THREE.ImageUtils.loadTexture('textures/ceiling.png')
+	ceilingTexture.wrapS = ceilingTexture.wrapT = THREE.RepeatWrapping;
+	ceilingTexture.repeat.set(100,100);
+
+	var cealingMaterial = new THREE.MeshBasicMaterial({
+		map:ceilingTexture,
+		side:THREE.DoubleSide
+		});
+
+	var ceilingGeometry = new THREE.PlaneBufferGeometry(2000, 2000, 100, 100);
+	
+	var ceiling = new THREE.Mesh(ceilingGeometry, cealingMaterial);
+	ceiling.position.y=  20;
+	ceiling.rotation.x= Math.PI/2;
+	scene.add(ceiling);
 	
 	//lantaarn inladen
 	loadOBJModel("models/", "lantern.obj", "models/", "lantern.mtl", (mesh) => {
@@ -152,59 +169,32 @@ function init() {
 
 	});
 
-	// objects
+	loader = new THREE.JSONLoader();
 
-	// var boxGeometry = new THREE.BoxBufferGeometry(20, 20, 20);
-	// boxGeometry = boxGeometry.toNonIndexed(); // ensure each face has unique vertices
+    loader.load( "models/json/doors.json", function( geometry ) {
+        mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial() );
+        mesh.scale.set( 10, 10, 10 );
+        mesh.position.y = 150;
+		mesh.position.x = 0;
+		scene.add(mesh);
+	} );
 
-	// position = boxGeometry.attributes.position;
-	// colors = [];
-
-	// for (var i = 0, l = position.count; i < l; i++) {
-
-	// 	color.setHSL(Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75);
-	// 	colors.push(color.r, color.g, color.b);
-
-	// }
-
-	// boxGeometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-	// for (var i = 0; i < 500; i++) {
-
-	// 	var boxMaterial = new THREE.MeshPhongMaterial({ specular: 0xffffff, flatShading: true, vertexColors: THREE.VertexColors });
-	// 	boxMaterial.color.setHSL(Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75);
-
-	// 	var box = new THREE.Mesh(boxGeometry, boxMaterial);
-	// 	box.position.x = Math.floor(Math.random() * 20 - 10) * 20;
-	// 	box.position.y = Math.floor(Math.random() * 20) * 20 + 10;
-	// 	box.position.z = Math.floor(Math.random() * 20 - 10) * 20;
-
-	// 	scene.add(box);
-	// 	objects.push(box);
-
-	// }
-
-	// var wall = new THREE.PlaneGeometry(100, 100);
-	 
-	// var plane = new THREE.Mesh(wall, material);
-	// plane.position.x = 10;
-	// plane.position.z = 10;
-	// scene.add(plane);
-	// objects.push(plane);
 
 	walls.forEach(function(element){
 		objects.push(element);
 		scene.add(element);
 	});
 
+	
 	//
 
 	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
-
 	//
+	
+
 
 	window.addEventListener('resize', onWindowResize, false);
 
