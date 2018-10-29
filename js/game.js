@@ -1,14 +1,18 @@
 var camera, scene, renderer, controls;
 
 var objects = [];
+var notes = [];
 
-var raycasterF, raycasterB, raycasterL, raycasterR;
+var raycasterF, raycasterB, raycasterL, raycasterR, raycasterX, INTERSECTED;
+var composer, outlinePass;
 
 var lantern;
 
 var blocker = document.getElementById('blocker');
 var instructions = document.getElementById('instructions');
 var deathscreen = document.getElementById('deathscreen');
+
+var pickUp = document.getElementById('pickUp');
 
 // http://www.html5rocks.com/en/tutorials/pointerlock/intro/
 
@@ -27,6 +31,8 @@ if (havePointerLock) {
 				controls.enabled = true;
 
 				blocker.style.display = 'none';
+				pickUp.style.display = 'none';
+
 
 			} else {
 
@@ -35,6 +41,7 @@ if (havePointerLock) {
 				blocker.style.display = 'block';
 
 				instructions.style.display = '';
+				pickUp.style.display = 'none';
 
 			}
 		}
@@ -97,7 +104,7 @@ init();
 animate();
 
 function init() {
-
+	pickUp.style.display = 'none';
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 101);
 
 	scene = new THREE.Scene();
@@ -211,6 +218,8 @@ function init() {
 	raycasterL = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(-1, 0, 0), 0, 4);
 	raycasterR = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(1, 0, 0), 0, 6);
 
+	raycasterX = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, 0, 0), 0, 15);
+
 	//AFRICA
 	var listener = new THREE.AudioListener();
 	camera.add(listener);
@@ -296,9 +305,20 @@ function init() {
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
+	composer = new THREE.EffectComposer(renderer);
+	var renderPass = new THREE.RenderPass(scene, camera);
+	composer.addPass(renderPass);
+	outlinePass = new THREE.OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera);
+	composer.addPass(outlinePass);
+
 	document.body.appendChild(renderer.domElement);
 
 	window.addEventListener('resize', onWindowResize, false);
+
+	var boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+	var box = new THREE.Mesh(boxGeometry, cealingMaterial);
+	scene.add(box);
+	notes.push(box);
 }
 
 function onWindowResize() {
@@ -317,7 +337,6 @@ function animate() {
 
 		raycasterF.ray.origin.copy(controls.getObject().position);
 		camera.getWorldDirection(raycasterF.ray.direction);
-		raycasterF.ray.direction.y = 0;
 		raycasterF.ray.origin.y = 10;
 
 		raycasterB.ray.origin.copy(controls.getObject().position);
@@ -332,10 +351,31 @@ function animate() {
 		raycasterR.ray.direction.set(-raycasterF.ray.direction.z, 0, raycasterF.ray.direction.x);
 		raycasterR.ray.origin.y = 10;
 
+		raycasterX.ray.origin.copy(controls.getObject().position);
+		camera.getWorldDirection(raycasterX.ray.direction);
+		raycasterX.ray.origin.y = 10;
+
 		var intersectionsF = raycasterF.intersectObjects(objects);
 		var intersectionsB = raycasterB.intersectObjects(objects);
 		var intersectionsL = raycasterL.intersectObjects(objects);
 		var intersectionsR = raycasterR.intersectObjects(objects);
+
+		var intersectionsX = raycasterX.intersectObjects(notes);
+
+		if (intersectionsX.length > 0) {
+			if ( INTERSECTED != intersectionsX[ 0 ].object ) {
+				if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+				INTERSECTED = intersectionsX[ 0 ].object;
+				INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+				INTERSECTED.material.emissive.setHex( 0xff0000 );
+
+				pickUp.style.display = 'block';
+			}
+		} else {
+			if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+			INTERSECTED = null;
+			pickUp.style.display = 'none';
+		}
 
 		var forwardObject = intersectionsF.length > 0;
 		var backObject = intersectionsB.length > 0;
