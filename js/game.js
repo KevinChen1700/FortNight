@@ -2,10 +2,9 @@ var camera, scene, renderer, controls;
 
 var objects = [];
 
-var raycaster, raycasterx, raycasterz, raycasterx2, raycasterz2;
-var storedX, storedY, storedZ;
+var raycasterF, raycasterB, raycasterL, raycasterR;
 
-var lightLantaarn;
+var lantern;
 
 var blocker = document.getElementById('blocker');
 var instructions = document.getElementById('instructions');
@@ -94,44 +93,219 @@ var direction = new THREE.Vector3();
 var vertex = new THREE.Vector3();
 var color = new THREE.Color();
 
-// Models index
-var models = {
-	lantaarn: {
-		obj: "models/lantern.obj",
-		mtl: "models/lantern.mtl",
-		mesh: null
-	},
-	lightLantaarn: {
-		licht: null
-	}
-};
-
-// Meshes index
-var meshes = {};
-
-
 init();
 animate();
 
-function lightLantaarnLoaded() {
-	meshes["lightLantaarn"] = models.lightLantaarn.licht.clone();
-	scene.add(meshes["lightLantaarn"]);
-}
+function init() {
 
-function onResourcesLoaded() {
-	meshes["lantaarn"] = models.lantaarn.mesh.clone();
-	meshes["lantaarn"].position.set(0, 10, 0);
-	meshes["lantaarn"].scale.set(2.5, 4.5, 4.5);
-	scene.add(meshes["lantaarn"]);
+	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 101);
+
+	scene = new THREE.Scene();
+	scene.background = new THREE.Color(000000);
+	scene.fog = new THREE.Fog(000000, 0, 50);
+
+	controls = new THREE.PointerLockControls(camera);
+	scene.add(controls.getObject());
+
+	monster = new Monster();
+	monster.position.set(10, 0, 10);
+
+	scene.add(monster);
+	objects.push(monster);
+
+	lantern = new THREE.Group();
+	loadOBJModel("models/", "lantern.obj", "models/", "lantern.mtl", (mesh) => {
+		mesh.material = new THREE.MeshPhongMaterial();
+		mesh.scale.set(2, 4, 2);
+		mesh.position.x = 3;
+		mesh.position.z = -3;
+		lantern.add(mesh);
+
+		var l = new THREE.PointLight(0xffd6aa, 1, 35);
+		lantern.add(l);
+	});
+	scene.add(lantern);
+	camera.add(lantern);
+
+	var onKeyDown = function (event) {
+
+		switch (event.keyCode) {
+
+			case 38: // up
+			case 87: // w
+				moveForward = true;
+				break;
+
+			case 37: // left
+			case 65: // a
+				moveLeft = true; break;
+
+			case 40: // down
+			case 83: // s
+				moveBackward = true;
+				break;
+
+			case 39: // right
+			case 68: // d
+				moveRight = true;
+				break;
+			case 67: //c
+				crouch = true;
+				break;
+			case 16: //shift
+				sprint = true;
+				break;
+			case 70: //f
+				fly = true;
+				break;
+			case 88: //x
+				monsterTeleport = true;
+				break;
+			case 82: //r
+				if (!health) location.reload();
+
+		}
+
+	};
+
+	var onKeyUp = function (event) {
+
+		switch (event.keyCode) {
+
+			case 38: // up
+			case 87: // w
+				moveForward = false;
+				break;
+
+			case 37: // left
+			case 65: // a
+				moveLeft = false;
+				break;
+
+			case 40: // down
+			case 83: // s
+				moveBackward = false;
+				break;
+
+			case 39: // right
+			case 68: // d
+				moveRight = false;
+				break;
+			case 67: //c
+				crouch = false;
+				break;
+			case 16: //shift
+				sprint = false;
+				break;
+			case 88: //x
+				monsterTeleport = false;
+				break;
+		}
+	};
+
+	document.addEventListener('keydown', onKeyDown, false);
+	document.addEventListener('keyup', onKeyUp, false);
+
+	raycasterF = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, 0, -1), 0, 10);
+	raycasterB = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, 0, 1), 0, 4);
+	raycasterL = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(-1, 0, 0), 0, 4);
+	raycasterR = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(1, 0, 0), 0, 6);
+
+	//AFRICA
+	var listener = new THREE.AudioListener();
+	camera.add(listener);
+
+	// create a global audio source
+	var sound = new THREE.Audio(listener);
+
+	// load a sound and set it as the Audio object's buffer AFRICAAAAAAAAAAAAAAAAAAAAAAAAAA
+	var audioLoader = new THREE.AudioLoader();
+	audioLoader.load('sounds/Toto-Africa.mp3', function (buffer) {
+		sound.setBuffer(buffer);
+		sound.setLoop(true);
+		sound.setVolume(0.5);
+		sound.play();
+	});
+	// floor number : 1,4,10,23,39 best,,240best,241,243
+	var textureLoader = new THREE.TextureLoader();
+	var floorTexture = textureLoader.load('textures/pattern_41/specular.png');
+	//var floorTexture = new THREE.ImageUtils.loadTexture('textures/cookiehunger.png')//lolzies
+
+	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+	floorTexture.repeat.set(100, 100);
+
+	var floorMaterial = new THREE.MeshPhongMaterial({
+		map: floorTexture,
+		side: THREE.DoubleSide
+	});
+
+	var floorGeometry = new THREE.PlaneBufferGeometry(2000, 2000, 100, 100);
+
+	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+	floor.position.y = -0.5;
+	floor.rotation.x = Math.PI / 2;
+	scene.add(floor);
+
+
+	//cealing	
+	//var ceilingTexture = new THREE.ImageUtils.loadTexture('textures/cookienightmare.jpg')//lolzies
+	var ceilingTexture = textureLoader.load('textures/ceiling.png')
+	ceilingTexture.wrapS = ceilingTexture.wrapT = THREE.RepeatWrapping;
+	ceilingTexture.repeat.set(100, 100);
+
+	var cealingMaterial = new THREE.MeshPhongMaterial({
+		map: ceilingTexture,
+		side: THREE.DoubleSide
+	});
+
+	var ceilingGeometry = new THREE.PlaneBufferGeometry(2000, 2000, 100, 100);
+
+	var ceiling = new THREE.Mesh(ceilingGeometry, cealingMaterial);
+	ceiling.position.y = 20;
+	ceiling.rotation.x = Math.PI / 2;
+	scene.add(ceiling);
+
+	loader = new THREE.JSONLoader();
+
+	loader.load("models/json/doors.json", function (geometry) {
+		mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial());
+		mesh.scale.set(10, 10, 10);
+		mesh.position.y = 150;
+		mesh.position.x = 0;
+		scene.add(mesh);
+	});
+
+
+	walls.forEach(function (element) {
+		objects.push(element);
+		scene.add(element);
+	});
+
+	var lastPositionx = controls.getObject().position.x;
+	var lastPositionz = controls.getObject().position.z;
+
+	window.setInterval(function () {
+		if (Math.sqrt(Math.pow(controls.getObject().position.x - lastPositionx, 2) + Math.pow(controls.getObject().position.z - lastPositionz, 2)) < 10) {
+			achtervolg = true;
+		}
+		lastPositionx = controls.getObject().position.x;
+		lastPositionz = controls.getObject().position.z;
+	}, 5000);
+
+	renderer = new THREE.WebGLRenderer({ antialias: true });
+	renderer.setPixelRatio(window.devicePixelRatio);
+	renderer.setSize(window.innerWidth, window.innerHeight);
+
+	document.body.appendChild(renderer.domElement);
+
+	window.addEventListener('resize', onWindowResize, false);
 }
 
 function onWindowResize() {
-
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 
 	renderer.setSize(window.innerWidth, window.innerHeight);
-
 }
 
 function animate() {
@@ -141,27 +315,32 @@ function animate() {
 		document.getElementById("health").innerHTML = "HP Points: " + health;
 		document.getElementById("stamina").innerHTML = "Stamina: " + stamina / 10;
 
-		raycaster.ray.origin.copy(controls.getObject().position);
-		raycaster.ray.origin.y -= 10;
+		raycasterF.ray.origin.copy(controls.getObject().position);
+		camera.getWorldDirection(raycasterF.ray.direction);
+		raycasterF.ray.direction.y = 0;
+		raycasterF.ray.origin.y = 10;
 
-		raycasterx.ray.origin.copy(controls.getObject().position);
-		raycasterz.ray.origin.copy(controls.getObject().position);
-		raycasterx2.ray.origin.copy(controls.getObject().position);
-		raycasterz2.ray.origin.copy(controls.getObject().position);
+		raycasterB.ray.origin.copy(controls.getObject().position);
+		raycasterB.ray.direction.set(-raycasterR.ray.direction.z, 0, raycasterR.ray.direction.x);
+		raycasterB.ray.origin.y = 10;
 
-		var intersections = raycaster.intersectObjects(objects);
-		var intersectionsx = raycasterx.intersectObjects(objects);
-		var intersectionsz = raycasterz.intersectObjects(objects);
-		var intersectionsx2 = raycasterx2.intersectObjects(objects);
-		var intersectionsz2 = raycasterz2.intersectObjects(objects);
+		raycasterL.ray.origin.copy(controls.getObject().position);
+		raycasterL.ray.direction.set(-raycasterB.ray.direction.z, 0, raycasterB.ray.direction.x);
+		raycasterL.ray.origin.y = 10;
 
+		raycasterR.ray.origin.copy(controls.getObject().position);
+		raycasterR.ray.direction.set(-raycasterF.ray.direction.z, 0, raycasterF.ray.direction.x);
+		raycasterR.ray.origin.y = 10;
 
+		var intersectionsF = raycasterF.intersectObjects(objects);
+		var intersectionsB = raycasterB.intersectObjects(objects);
+		var intersectionsL = raycasterL.intersectObjects(objects);
+		var intersectionsR = raycasterR.intersectObjects(objects);
 
-		var onObject = intersections.length > 0;
-		var touchingWall = false;
-		if (intersectionsx.length > 0 || intersectionsz.length > 0 || intersectionsx2.length > 0 || intersectionsz2.length > 0) {
-			touchingWall = true;
-		}
+		var forwardObject = intersectionsF.length > 0;
+		var backObject = intersectionsB.length > 0;
+		var leftObject = intersectionsL.length > 0;
+		var rightObject = intersectionsR.length > 0;
 
 		var time = performance.now();
 		var delta = (time - prevTime) / 1000;
@@ -183,7 +362,7 @@ function animate() {
 
 		if (sprint && stamina > 2) {
 			if (moveForward) {
-				velocity.z = velocity.z * 1.11;
+				velocity.z += -1.5;
 				stamina -= 3;
 			}
 		}
@@ -226,26 +405,19 @@ function animate() {
 			}, 3000);
 		}
 
-
-		if (onObject === true) {
-
-			velocity.y = Math.max(0, velocity.y);
-			canJump = true;
-
+		if (forwardObject === true) {
+			velocity.z = 1;
+		}
+		if (backObject === true) {
+			velocity.z = -1;
+		}
+		if (leftObject === true) {
+			velocity.x = 1;
+		}
+		if (rightObject === true) {
+			velocity.x = -1;
 		}
 
-		if (touchingWall) {
-			velocity.y = 0;
-			velocity.x = 0;
-			velocity.z = 0;
-			controls.getObject().position.x = storedX;
-			controls.getObject().position.z = storedZ;
-			touchingWall = false;
-		}
-		storedX = controls.getObject().position.x;
-		storedY = controls.getObject().position.y;
-		storedZ = controls.getObject().position.z;
-		
 		controls.getObject().translateX(velocity.x * delta);
 		controls.getObject().translateY(velocity.y * delta);
 		controls.getObject().translateZ(velocity.z * delta);
@@ -259,7 +431,6 @@ function animate() {
 
 		}
 
-
 		if (!health) {
 			document.getElementById("health").innerHTML = "HP Points: " + health;
 			controlsEnabled = false;
@@ -268,25 +439,6 @@ function animate() {
 			deathscreen.style.display = '';
 		}
 
-		//lantaarn in first person view
-		meshes["lantaarn"].position.set(
-			controls.getObject().position.x,
-			controls.getObject().position.y,
-			controls.getObject().position.z
-		);
-
-		meshes["lantaarn"].rotation.set(
-			controls.getObject().rotation.x,
-			controls.getObject().rotation.y,
-			controls.getObject().rotation.z,
-		);
-
-		//licht van het lantaarn
-		meshes["lightLantaarn"].position.set(
-			controls.getObject().position.x,
-			controls.getObject().position.y + 4,
-			controls.getObject().position.z
-		);
 		prevTime = time;
 	}
 

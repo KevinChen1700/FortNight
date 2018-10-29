@@ -9,6 +9,6 @@ function loadOBJModel(modelPath, modelName, texturePath, textureName, onload) {
                 .setMaterials(materials)
                 .load(modelName, function (object) {
                     onload(object);
-                }, function () { }, function (e) { console.log("Error loading model"); console.log(e); });
+                }, function () { }, function (e) { console.log("Error loading model"); console.log(modelName); console.log(e); });
         });
 }
