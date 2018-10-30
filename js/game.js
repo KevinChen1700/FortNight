@@ -109,6 +109,7 @@ var monster;
 var monsterTeleport = false;
 var achtervolg = false;
 var sound;
+var rayXOrigin = 10;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -131,7 +132,7 @@ function init() {
 	scene.add(controls.getObject());
 
 	monster = new Monster();
-	monster.position.set(10, 0, 10);
+	monster.position.set(220, 0, -170);
 
 	scene.add(monster);
 	objects.push(monster);
@@ -396,7 +397,7 @@ function animate() {
 
 		raycasterX.ray.origin.copy(controls.getObject().position);
 		camera.getWorldDirection(raycasterX.ray.direction);
-		raycasterX.ray.origin.y = 10;
+		raycasterX.ray.origin.y = rayXOrigin;
 
 		var intersectionsF = raycasterF.intersectObjects(objects);
 		var intersectionsB = raycasterB.intersectObjects(objects);
@@ -461,12 +462,14 @@ function animate() {
 		if (crouch) {
 			if (camera.position.y > -5) camera.position.y -= 0.5;
 			else camera.position.y = -5;
+			rayXOrigin = 5;
 			velocity.x = velocity.x / 1.2;
 			velocity.z = velocity.z / 1.2;
 		}
 		else {
 			if (camera.position.y < 0) camera.position.y += 0.5;
 			else camera.position.y = 0;
+			rayXOrigin = 10;
 		}
 
 		if (Math.abs(controls.getObject().position.x - monster.position.x) < 12 && Math.abs(controls.getObject().position.z - monster.position.z) < 12) {
