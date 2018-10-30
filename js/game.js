@@ -605,16 +605,18 @@ function animate() {
 	renderer.render(scene, camera);
 }
 
-function checkWin(){
-	if(note == 6){
-		monster.position.set(-1000,0,-1000);
+function checkWin() {
+	if (note == 6) {
+		monster.position.set(-1000, 0, -1000);
 	}
-	if (controls.getObject().position.x <= 205 && (controls.getObject().position.z <= -146 && controls.getObject().position.z >= -194)){
-		if(note == 6){
+	if (controls.getObject().position.x <= 205 && (controls.getObject().position.z <= -146 && controls.getObject().position.z >= -194)) {
+		if (note == 6) {
 			win = true;
 		}
 	}
-	if (controls.getObject().position.x <= 283 && controls.getObject().position.z <= -155){
-		achtervolg = true;
+	if (controls.getObject().position.x <= 283 && controls.getObject().position.z <= -155) {
+		if (note != 6) {
+			achtervolg = true;
+		}
 	}
 }
