@@ -540,16 +540,9 @@ function animate() {
 			achtervolg = false;
 			monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
 			var interval = window.setInterval(function () {
-<<<<<<< HEAD
 				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 55) {
 					window.clearInterval(interval);
 					monster.position.set(265, 0, -165);
-=======
-				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 30) {
-					window.clearInterval(interval);
-					chasingSound.stop();
-					monster.position.set(220, 0, -170);
->>>>>>> c352d486b3384b63c0ec772e5710c73f3219e4eb
 				}
 				else {
 					monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
