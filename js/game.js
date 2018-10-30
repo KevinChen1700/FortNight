@@ -113,6 +113,8 @@ var sound;
 var rayXOrigin = 10;
 var walkingSound;
 var runningSound;
+var chasingSound;
+var monsterSound;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -259,6 +261,8 @@ function init() {
 	sound = new THREE.Audio(listener);
 	walkingSound = new THREE.Audio(listener);
 	runningSound = new THREE.Audio(listener);
+	chasingSound = new THREE.Audio(listener);
+	monsterSound = new THREE.Audio(listener);
 
 	// load a sound and set it as the Audio object's buffer AFRICAAAAAAAAAAAAAAAAAAAAAAAAAA
 	var audioLoader = new THREE.AudioLoader();
@@ -279,6 +283,18 @@ function init() {
 		runningSound.setBuffer(buffer);
 		runningSound.setLoop(true);
 		runningSound.setVolume(0.5);
+	});
+
+	audioLoader.load('sounds/Chase_Music.mp3', function (buffer) {
+		chasingSound.setBuffer(buffer);
+		chasingSound.setLoop(true);
+		chasingSound.setVolume(0.5);
+	});
+
+	audioLoader.load('sounds/Monster_Growl.mp3', function (buffer) {
+		monsterSound.setBuffer(buffer);
+		chasingSound.setLoop(false);
+		chasingSound.setVolume(0.5);
 	});
 
 	// floor number : 1,4,10,23,39 best,,240best,241,243
@@ -347,6 +363,10 @@ function init() {
 		lastPositionx = controls.getObject().position.x;
 		lastPositionz = controls.getObject().position.z;
 	}, 10000);
+
+	window.setInterval(function () {
+		monsterSound.play();
+	}, 60000);
 
 	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.shadowMap.enabled = true;
@@ -510,12 +530,14 @@ function animate() {
 		}
 
 		if (achtervolg) {
+			chasingSound.play();
 			achtervolg = false;
 			monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
 			var interval = window.setInterval(function () {
-				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 60) {
+				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 30) {
 					window.clearInterval(interval);
-					monster.position.set(0, 100, 0);
+					chasingSound.stop();
+					monster.position.set(220, 0, -170);
 				}
 				else {
 					monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
