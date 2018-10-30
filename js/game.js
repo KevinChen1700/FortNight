@@ -356,7 +356,7 @@ function init() {
 		scene.add(notes[i]);
 	}
 	notes[0].position.set(139, 8, 26);
-	notes[0].position.set(-80, 10, -20.5);
+	notes[1].position.set(-80, 10, -20.5);
 	notes[2].position.set(-160, 1, -47);
 	notes[3].position.set(-36, 3, 47);
 	notes[4].position.set(-3, 4, 166);
