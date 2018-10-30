@@ -14,6 +14,8 @@ var deathscreen = document.getElementById('deathscreen');
 
 var pickUp = document.getElementById('pickUp');
 
+var props;
+
 // http://www.html5rocks.com/en/tutorials/pointerlock/intro/
 
 var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
@@ -139,7 +141,10 @@ function init() {
 	scene.add(lantern);
 	camera.add(lantern);
 
+	props = new THREE.Group();
 	loadObjects();
+	objects.push(props);
+	scene.add(props);
 
 	var onKeyDown = function (event) {
 
@@ -220,9 +225,9 @@ function init() {
 	document.addEventListener('keydown', onKeyDown, false);
 	document.addEventListener('keyup', onKeyUp, false);
 
-	raycasterF = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, 0, -1), 0, 10);
-	raycasterB = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, 0, 1), 0, 4);
-	raycasterL = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(-1, 0, 0), 0, 4);
+	raycasterF = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, 0, -1), 0, 6);
+	raycasterB = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, 0, 1), 0, 6);
+	raycasterL = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(-1, 0, 0), 0, 6);
 	raycasterR = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(1, 0, 0), 0, 6);
 
 	raycasterX = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, 0, 0), 0, 15);
