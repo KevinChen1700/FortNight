@@ -30,6 +30,7 @@ if (havePointerLock) {
 			note++;
 			scene.remove(INTERSECTED);
 			notes.splice(notes.indexOf(INTERSECTED), 1);
+			achtervolg = true;
 		}
 		if(note == 6){
 			hint.style.display = 'block';
@@ -340,12 +341,12 @@ function init() {
 	var lastPositionz = controls.getObject().position.z;
 
 	window.setInterval(function () {
-		if (Math.sqrt(Math.pow(controls.getObject().position.x - lastPositionx, 2) + Math.pow(controls.getObject().position.z - lastPositionz, 2)) < 10) {
+		if (Math.sqrt(Math.pow(controls.getObject().position.x - lastPositionx, 2) + Math.pow(controls.getObject().position.z - lastPositionz, 2)) < 3) {
 			achtervolg = true;
 		}
 		lastPositionx = controls.getObject().position.x;
 		lastPositionz = controls.getObject().position.z;
-	}, 5000);
+	}, 10000);
 
 	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.shadowMap.enabled = true;
@@ -475,8 +476,9 @@ function animate() {
 			}
 		}
 		else {
+			if (stamina < 1000) stamina += 1; else stamina = 1000;
 			if (!((moveForward || moveBackward) && !(moveForward && moveBackward)) && !((moveLeft || moveRight) && !(moveLeft && moveRight))) {
-				if (stamina < 1000) stamina += 2; else stamina = 1000;
+				if (stamina < 1000) stamina += 4; else stamina = 1000;
 				if (walkingSound.isPlaying) walkingSound.stop();
 				if (runningSound.isPlaying) runningSound.stop();
 			}
@@ -511,7 +513,7 @@ function animate() {
 			achtervolg = false;
 			monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
 			var interval = window.setInterval(function () {
-				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 70) {
+				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 40) {
 					window.clearInterval(interval);
 					monster.position.set(0, 100, 0);
 				}
