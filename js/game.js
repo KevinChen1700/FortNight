@@ -87,6 +87,7 @@ var stamina = 1000;
 var monster;
 var monsterTeleport = false;
 var achtervolg = false;
+var sound;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -205,7 +206,7 @@ function animate() {
 		}
 
 		if (Math.abs(controls.getObject().position.x - monster.position.x) < 12 && Math.abs(controls.getObject().position.z - monster.position.z) < 12) {
-			//health -= 1;
+			health -= 1;
 		}
 
 		if (monsterTeleport) {
@@ -214,14 +215,14 @@ function animate() {
 
 		if (achtervolg) {
 			achtervolg = false;
-			//monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
+			monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
 			var interval = window.setInterval(function () {
 				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 100) {
 					window.clearInterval(interval);
 					monster.position.set(0, 100, 0);
 				}
 				else {
-					//monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
+					monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
 				}
 			}, 3000);
 		}

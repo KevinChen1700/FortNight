@@ -125,7 +125,7 @@ function init() {
 	camera.add( listener );
 
 // create a global audio source
-	var sound = new THREE.Audio( listener );
+	sound = new THREE.Audio( listener );
 
 // load a sound and set it as the Audio object's buffer AFRICAAAAAAAAAAAAAAAAAAAAAAAAAA
 	var audioLoader = new THREE.AudioLoader();
