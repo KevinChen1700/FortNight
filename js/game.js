@@ -129,10 +129,17 @@ function init() {
 		lantern.add(mesh);
 
 		var l = new THREE.PointLight(0xffd6aa, 1, 35);
+		l.castShadow = true;
+		l.shadow.mapSize.width = 512;  // default
+		l.shadow.mapSize.height = 512; // default
+		l.shadow.camera.near = 0.5;       // default
+		l.shadow.camera.far = 500      // default
 		lantern.add(l);
 	});
 	scene.add(lantern);
 	camera.add(lantern);
+
+	loadObjects();
 
 	var onKeyDown = function (event) {
 
@@ -253,6 +260,7 @@ function init() {
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	floor.position.y = -0.5;
 	floor.rotation.x = Math.PI / 2;
+	floor.receiveShadow = true;
 	scene.add(floor);
 
 
@@ -302,6 +310,8 @@ function init() {
 	}, 5000);
 
 	renderer = new THREE.WebGLRenderer({ antialias: true });
+	renderer.shadowMap.enabled = true;
+	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 

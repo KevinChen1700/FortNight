@@ -264,9 +264,198 @@ for (i = horizontal.length; i < vertical.length + horizontal.length; i++) {
 	walls[i].position.set(vertical[i - horizontal.length][0], 10, vertical[i - horizontal.length][1]);
 	walls[i].rotation.y = Math.PI / 2;
 	walls[i].receiveShadow = true;
-	walls[i].castShadow = true;
-}//end of loop
+	walls[i].castShadow = false;
+	//end of loop
 
+	function loadObjects () {
+   
+		//alle modellen inladen
+
+		loadOBJModel("models/", "bookshelf.obj", "models/", "bookshelf.mtl", (mesh) => {
+			mesh.scale.set(8,8,8);
+			mesh.material = new THREE.MeshBasicMaterial;
+			mesh.position.set(-26,2,32);
+			scene.add(mesh);
+
+			var mesh2 = mesh.clone();
+			mesh2.position.set(245,3,-155);
+			mesh2.rotation.z = 1.5;
+			scene.add(mesh2);
+
+			var mesh3 = mesh.clone();
+			mesh3.position.set(-60,2,52);
+			scene.add(mesh3);
+		});
+		loadOBJModel("models/", "lamp.obj", "models/", "lamp.mtl", (mesh) => {
+			mesh.scale.set(2.5,2,2);
+			mesh.material = new THREE.MeshBasicMaterial;
+			mesh.position.set(-25,12,15);
+			scene.add(mesh);
+
+			var mesh2 = mesh.clone();
+			mesh2.position.set(-2,12,138);
+			scene.add(mesh2);
+
+			var mesh3 = mesh.clone();
+			mesh3.rotation.z = 1.5;
+			mesh3.position.set(-152,2,-40);
+			scene.add(mesh3);
+
+			var mesh4 = mesh.clone();
+			mesh4.position.set(-60,12,62);
+			scene.add(mesh4);
+		});
+		loadOBJModel("models/", "shackles.obj", "models/", "shackles.mtl", (mesh) => {
+			mesh.scale.set(0.5,0.5,0.5);
+			mesh.material = new THREE.MeshBasicMaterial;
+			mesh.position.set(-22,0,-35);
+			scene.add(mesh);
+		});
+		loadOBJModel("models/", "window.obj", "models/", "window.mtl", (mesh) => {
+			mesh.scale.set(15,15,15);
+			mesh.material = new THREE.MeshBasicMaterial;
+			mesh.rotation.z = 1.5;
+			mesh.position.set(15,1,-35);
+			objects.push(mesh);
+			scene.add(mesh);
+
+			var mesh2 = mesh.clone();
+			mesh2.position.set(200,1,-160);
+			scene.add(mesh2);
+
+			var mesh3 = mesh.clone();
+			mesh3.position.set(-55,1,72);
+			scene.add(mesh3);
+		});
+		loadOBJModel("models/", "window2.obj", "models/", "window2.mtl", (mesh) => {
+			mesh.scale.set(40,40,40);
+			mesh.material = new THREE.MeshBasicMaterial;
+			mesh.position.set(69,3,-15);
+			scene.add(mesh);
+		});
+		loadOBJModel("models/", "benchBroken.obj", "models/", "benchBroken.mtl", (mesh) => {
+			mesh.scale.set(20,20,20);
+			mesh.material = new THREE.MeshBasicMaterial;
+			mesh.position.set(65,5,25);
+			mesh.rotation.set(1,0,0);
+			scene.add(mesh);
+		});
+		loadOBJModel("models/", "shovel.obj", "models/", "shovel.mtl", (mesh) => {
+		 mesh.scale.set(15,15,15);
+		 mesh.material = new THREE.MeshBasicMaterial;
+		 mesh.position.set(120,4,-22);
+		 mesh.rotation.x = 5;
+		 scene.add(mesh);
+	 });
+	 loadOBJModel("models/", "tafel.obj", "models/", "tafel.mtl", (mesh) => {
+		 mesh.scale.set(5,5,5);
+		 mesh.material = new THREE.MeshBasicMaterial;
+		 mesh.position.set(140,3,25);
+		 scene.add(mesh);
+
+		 var mesh2 = mesh.clone();
+		 mesh2.position.set(220,3,-180);
+		 mesh2.rotation.z = 1.5;
+		 mesh2.rotation.y = 1.5;
+		 scene.add(mesh2);
+	 });
+	 loadOBJModel("models/", "stoel.obj", "models/", "stoel.mtl", (mesh) => {
+		 mesh.scale.set(0.2,0.2,0.2);
+		 mesh.material = new THREE.MeshBasicMaterial;
+		 mesh.position.set(155,5,18);
+		 mesh.rotation.x = 2.8;
+		 scene.add(mesh);
+
+		 var mesh2 = mesh.clone();
+		 mesh2.position.set(100,5,75);
+		 scene.add(mesh2);
+	 });
+	 loadOBJModel("models/", "gravestoneDebris.obj", "models/", "gravestoneDebris.mtl", (mesh) => {
+		 mesh.scale.set(20,20,20);
+		 mesh.material = new THREE.MeshBasicMaterial;
+		 mesh.position.set(185,1,35);
+		 scene.add(mesh);
+	 });
+	 loadOBJModel("models/", "cross.obj", "models/", "cross.mtl", (mesh) => {
+		 mesh.scale.set(10,10,10);
+		 mesh.material = new THREE.MeshBasicMaterial;
+		 mesh.position.set(280,1,-180);
+		 scene.add(mesh);
+	 });
+	 loadOBJModel("models/", "lanternGlass.obj", "models/", "lanternGlass.mtl", (mesh) => {
+		 mesh.scale.set(8,8,8);
+		 mesh.material = new THREE.MeshBasicMaterial;
+		 mesh.position.set(75,12,138);
+		 scene.add(mesh);
+	 });
+	 loadOBJModel("models/", "gravestoneBroken.obj", "models/", "gravestoneBroken.mtl", (mesh) => {
+		 mesh.scale.set(20,20,20);
+		 mesh.material = new THREE.MeshBasicMaterial;
+		 mesh.rotation.y = 1.5
+		 mesh.position.set(50,1,75);
+		 scene.add(mesh);
+	 });
+	 loadOBJModel("models/", "detailChalice.obj", "models/", "detailChalice.mtl", (mesh) => {
+		 mesh.scale.set(10,10,10);
+		 mesh.material = new THREE.MeshBasicMaterial;
+		 mesh.position.set(-300,3.5,-70);
+		 scene.add(mesh);
+	 });
+	 loadOBJModel("models/", "bed.obj", "models/", "bed.mtl", (mesh) => {
+		 var textureLoader = new THREE.TextureLoader();
+				 var map = textureLoader.load('models/bedTexture.png');
+				 var material = new THREE.MeshPhongMaterial({map: map});
+	 
+				 mesh.traverse(function (node){
+					 if(node.isMesh) node.material = material;
+				 });
+		 
+		 mesh.material = new THREE.MeshBasicMaterial;
+		 mesh.position.set(-6,3,167);
+		 scene.add(mesh);
+
+		 var mesh2 = mesh.clone();
+		 mesh2.rotation.x = 1.5;
+		 mesh2.rotation.z = 1.5;
+		 mesh2.position.set(-92,5,-40);
+		 scene.add(mesh2);
+		 
+		 var mesh3 = mesh.clone();
+		 mesh3.position.set(-35,2,47);
+		 scene.add(mesh3);
+	 });
+	 
+	 loadOBJModel("models/", "Sedia.obj", "models/", "Sedia.mtl", (mesh) => {
+		 var textureLoader = new THREE.TextureLoader();
+				 var map = textureLoader.load('models/Sedia.png');
+				 var material = new THREE.MeshPhongMaterial({map: map});
+	 
+				 mesh.traverse(function (node){
+					 if(node.isMesh) node.material = material;
+				 });
+		 mesh.scale.set(0.3,0.3,0.3);
+		 mesh.material = new THREE.MeshBasicMaterial;
+		 mesh.rotation.y = 1.5;
+		 mesh.position.set(-300,3.5,-70);
+		 scene.add(mesh);
+	 });
+	 
+	 loadOBJModel("models/", "body.obj", "models/", "Sedia.mtl", (mesh) => {
+		 var textureLoader = new THREE.TextureLoader();
+				 var map = textureLoader.load('models/body.png');
+				 var material = new THREE.MeshPhongMaterial({map: map});
+	 
+				 mesh.traverse(function (node){
+					 if(node.isMesh) node.material = material;
+				 });
+		 mesh.scale.set(0.09,0.09,0.09);
+		 mesh.material = new THREE.MeshBasicMaterial;
+		 mesh.rotation.x = 4.65;
+		 mesh.position.set(-17,2.3,72);
+		 scene.add(mesh);
+	 });
+}
+}
 
 	
 	
