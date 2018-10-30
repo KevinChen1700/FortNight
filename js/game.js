@@ -25,7 +25,7 @@ if (havePointerLock) {
 
 	var element = document.body;
 
-	
+
 
 	var pointerlockchange = function (event) {
 
@@ -109,6 +109,7 @@ var sprint = false;
 var health = 100;
 var stamina = 1000;
 var note = 0;
+var win = false;
 var monster;
 var monsterTeleport = false;
 var achtervolg = false;
@@ -143,7 +144,7 @@ function init() {
 	scene.add(controls.getObject());
 
 	monster = new Monster();
-	monster.position.set(265, 0, -165);
+	monster.position.set(205, 0, -169);
 
 	scene.add(monster);
 	objects.push(monster);
@@ -204,10 +205,10 @@ function init() {
 				fly = true;
 				break;
 			case 88: //x
-				monsterTeleport = true;
+				win = true;
 				break;
 			case 82: //r
-				if (!health) location.reload();
+				if (!health || win) location.reload();
 			case 69: //e
 				tryPickUp();
 				break;
@@ -364,7 +365,9 @@ function init() {
 
 	window.setInterval(function () {
 		if (Math.sqrt(Math.pow(controls.getObject().position.x - lastPositionx, 2) + Math.pow(controls.getObject().position.z - lastPositionz, 2)) < 40) {
-			achtervolg = true;
+			if (controlsEnabled == true) {
+				achtervolg = true;
+			}
 		}
 		lastPositionx = controls.getObject().position.x;
 		lastPositionz = controls.getObject().position.z;
@@ -417,6 +420,18 @@ function onWindowResize() {
 
 function animate() {
 	requestAnimationFrame(animate);
+
+	checkWin();
+	if (win) {
+		document.getElementById('ui').style.display = 'none';
+		controlsEnabled = false;
+		controls.enabled = false;
+		blocker.style.display = 'block';
+		winscreen.style.display = '';
+	}
+	notes.forEach(function (note) {
+		note.rotation.y += 0.01;
+	});
 
 	if (controlsEnabled === true) {
 		document.getElementById("health").innerHTML = "HP Points: " + health;
@@ -540,9 +555,9 @@ function animate() {
 			achtervolg = false;
 			monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
 			var interval = window.setInterval(function () {
-				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 55) {
+				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 50) {
 					window.clearInterval(interval);
-					monster.position.set(265, 0, -165);
+					monster.position.set(205, 0, -169);
 				}
 				else {
 					monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
@@ -588,4 +603,18 @@ function animate() {
 	}
 
 	renderer.render(scene, camera);
+}
+
+function checkWin(){
+	if(note == 6){
+		monster.position.set(-1000,0,-1000);
+	}
+	if (controls.getObject().position.x <= 205 && (controls.getObject().position.z <= -146 && controls.getObject().position.z >= -194)){
+		if(note == 6){
+			win = true;
+		}
+	}
+	if (controls.getObject().position.x <= 283 && controls.getObject().position.z <= -155){
+		achtervolg = true;
+	}
 }

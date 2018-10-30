@@ -358,17 +358,7 @@ for (i = horizontal.length; i < vertical.length + horizontal.length; i++) {
 		 mesh2.rotation.y = 1.5;
 		 props.add(mesh2);
 	 });
-	 loadOBJModel("models/", "stoel.obj", "models/", "stoel.mtl", (mesh) => {
-		 mesh.scale.set(0.2,0.2,0.2);
-		 mesh.material = new THREE.MeshBasicMaterial;
-		 mesh.position.set(155,5,18);
-		 mesh.rotation.x = 2.8;
-		 props.add(mesh);
 
-		 var mesh2 = mesh.clone();
-		 mesh2.position.set(100,5,75);
-		 props.add(mesh2);
-	 });
 	 loadOBJModel("models/", "gravestoneDebris.obj", "models/", "gravestoneDebris.mtl", (mesh) => {
 		 mesh.scale.set(20,20,20);
 		 mesh.material = new THREE.MeshBasicMaterial;
@@ -439,7 +429,7 @@ for (i = horizontal.length; i < vertical.length + horizontal.length; i++) {
 		 props.add(mesh);
 	 });
 	 
-	 loadOBJModel("models/", "body.obj", "models/", "Sedia.mtl", (mesh) => {
+	 loadOBJModel("models/", "body.obj", "models/", "cross.mtl", (mesh) => {
 		 var textureLoader = new THREE.TextureLoader();
 				 var map = textureLoader.load('models/body.png');
 				 var material = new THREE.MeshPhongMaterial({map: map});
