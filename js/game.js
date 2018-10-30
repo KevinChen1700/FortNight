@@ -24,23 +24,13 @@ var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement
 if (havePointerLock) {
 
 	var element = document.body;
+
 	
-	function tryPickUp(){
-		if(allowPickUp === true){
-			note++;
-			scene.remove(INTERSECTED);
-			notes.splice(notes.indexOf(INTERSECTED), 1);
-			achtervolg = true;
-		}
-		if(note == 6){
-			hint.style.display = 'block';
-		}
-	}
 
 	var pointerlockchange = function (event) {
 
 		if (health) {
-			if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
+			if ((document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) && document.readyState === "complete") {
 
 				controlsEnabled = true;
 				controls.enabled = true;
@@ -79,21 +69,34 @@ if (havePointerLock) {
 	document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
 
 	instructions.addEventListener('click', function (event) {
+		if (document.readyState === "complete") {
+			instructions.style.display = 'none';
 
-		instructions.style.display = 'none';
-
-		// Ask the browser to lock the pointer
-		element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
-		element.requestPointerLock();
-
+			// Ask the browser to lock the pointer
+			element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+			element.requestPointerLock();
+		}
 	}, false);
 
-} else {	
+} else {
 
 	instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
 
 }
+function tryPickUp() {
+	if (allowPickUp === true) {
+		note++;
+		scene.remove(INTERSECTED);
+		notes.splice(notes.indexOf(INTERSECTED), 1);
 
+		document.getElementById('noNotes').innerHTML = note + " out of 6 notes collected.";
+
+		achtervolg = true;
+	}
+	if (note == 6) {
+		hint.style.display = 'block';
+	}
+}
 var controlsEnabled = false;
 
 var moveForward = false;
@@ -120,11 +123,14 @@ var direction = new THREE.Vector3();
 var vertex = new THREE.Vector3();
 var color = new THREE.Color();
 
+
 init();
+
 animate();
 
 function init() {
 	pickUp.style.display = 'none';
+	deathscreen.style.display = 'none';
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 101);
 
 	scene = new THREE.Scene();
@@ -135,7 +141,7 @@ function init() {
 	scene.add(controls.getObject());
 
 	monster = new Monster();
-	monster.position.set(220, 0, -170);
+	monster.position.set(265, 0, -165);
 
 	scene.add(monster);
 	objects.push(monster);
@@ -341,7 +347,7 @@ function init() {
 	var lastPositionz = controls.getObject().position.z;
 
 	window.setInterval(function () {
-		if (Math.sqrt(Math.pow(controls.getObject().position.x - lastPositionx, 2) + Math.pow(controls.getObject().position.z - lastPositionz, 2)) < 3) {
+		if (Math.sqrt(Math.pow(controls.getObject().position.x - lastPositionx, 2) + Math.pow(controls.getObject().position.z - lastPositionz, 2)) < 40) {
 			achtervolg = true;
 		}
 		lastPositionx = controls.getObject().position.x;
@@ -365,11 +371,11 @@ function init() {
 	window.addEventListener('resize', onWindowResize, false);
 
 	var notePlane = new THREE.PlaneGeometry(1.5, 3);
-	var noteMaterial = new THREE.MeshPhongMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+	var noteMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, side: THREE.DoubleSide });
 	var noteObj = new THREE.Mesh(notePlane, noteMaterial);
 
 	scene.add(noteObj);
-	for(i = 0; i < 6; i++){
+	for (i = 0; i < 6; i++) {
 		notes.push(noteObj.clone());
 		scene.add(notes[i]);
 	}
@@ -379,7 +385,7 @@ function init() {
 	notes[3].position.set(-36, 3, 47);
 	notes[4].position.set(-3, 4, 166);
 	notes[5].position.set(51, 6, 78.7);
-	
+
 }
 
 function onWindowResize() {
@@ -469,7 +475,7 @@ function animate() {
 			if (moveForward) {
 				velocity.z += -1.5;
 				stamina -= 3;
-				if (!runningSound.isPlaying) { 
+				if (!runningSound.isPlaying) {
 					if (walkingSound.isPlaying) walkingSound.stop();
 					runningSound.play();
 				}
@@ -511,14 +517,14 @@ function animate() {
 
 		if (achtervolg) {
 			achtervolg = false;
-			monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
+			monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
 			var interval = window.setInterval(function () {
-				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 60) {
+				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 55) {
 					window.clearInterval(interval);
-					monster.position.set(0, 100, 0);
+					monster.position.set(265, 0, -165);
 				}
 				else {
-					monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
+					monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
 				}
 			}, 5000);
 		}
@@ -550,7 +556,7 @@ function animate() {
 		}
 
 		if (!health) {
-			document.getElementById("health").innerHTML = "HP Points: " + health;
+			document.getElementById('ui').style.display = none;
 			controlsEnabled = false;
 			controls.enabled = false;
 			blocker.style.display = 'block';

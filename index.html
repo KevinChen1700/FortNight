@@ -1,151 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>three.js - pointerlock controls</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			html, body {
-				width: 100%;
-				height: 100%;
-			}
 
-			body {
-				background-color: #ffffff;
-				margin: 0;
-				overflow: hidden;
-				font-family: arial;
-			}
+<head>
+	<title>FortNight -- Escape. Survive.</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<style>
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+		}
 
-			#blocker {
+		body {
+			background-color: #ffffff;
+			margin: 0;
+			overflow: hidden;
+			font-family: arial;
+		}
 
-				position: absolute;
+		#blocker {
 
-				width: 100%;
-				height: 100%;
+			position: absolute;
 
-				background-color: rgba(0,0,0,0.5);
+			width: 100%;
+			height: 100%;
 
-			}
+			background-color: rgba(0, 0, 0, 0.5);
 
-			#instructions {
+		}
 
-				width: 100%;
-				height: 100%;
+		#instructions {
 
-				display: -webkit-box;
-				display: -moz-box;
-				display: box;
+			width: 100%;
+			height: 100%;
 
-				-webkit-box-orient: horizontal;
-				-moz-box-orient: horizontal;
-				box-orient: horizontal;
+			display: -webkit-box;
+			display: -moz-box;
+			display: box;
 
-				-webkit-box-pack: center;
-				-moz-box-pack: center;
-				box-pack: center;
+			-webkit-box-orient: horizontal;
+			-moz-box-orient: horizontal;
+			box-orient: horizontal;
 
-				-webkit-box-align: center;
-				-moz-box-align: center;
-				box-align: center;
+			-webkit-box-pack: center;
+			-moz-box-pack: center;
+			box-pack: center;
 
-				color: #ffffff;
-				text-align: center;
+			-webkit-box-align: center;
+			-moz-box-align: center;
+			box-align: center;
 
-				cursor: pointer;
+			color: #ffffff;
+			text-align: center;
 
-			}
+			cursor: pointer;
 
-			#deathscreen {
-				width: 100%;
-				height: 100%;
+		}
 
-				display: -webkit-box;
-				display: -moz-box;
-				display: box;
+		#deathscreen {
+			width: 100%;
+			height: 100%;
 
-				-webkit-box-orient: horizontal;
-				-moz-box-orient: horizontal;
-				box-orient: horizontal;
+			display: -webkit-box;
+			display: -moz-box;
+			display: box;
 
-				-webkit-box-pack: center;
-				-moz-box-pack: center;
-				box-pack: center;
+			-webkit-box-orient: horizontal;
+			-moz-box-orient: horizontal;
+			box-orient: horizontal;
 
-				-webkit-box-align: center;
-				-moz-box-align: center;
-				box-align: center;
+			-webkit-box-pack: center;
+			-moz-box-pack: center;
+			box-pack: center;
 
-				color: #ffffff;
-				text-align: center;
+			-webkit-box-align: center;
+			-moz-box-align: center;
+			box-align: center;
 
-				cursor: pointer;
+			color: #ffffff;
+			text-align: center;
 
-				display: 'none';
-			}
+			cursor: pointer;
 
-			#ui {
-				position: absolute;
-				color: #ffffff;
+			display: 'none';
+		}
 
-			}
+		#ui {
+			background-color: gray;
+			border-style: groove;
+			border-width: 4px;
+			position: absolute;
+			color: #ffffff;
 
-			#pickUp {
-				position: absolute;
-			}
+		}
 
-			#hint {
-				position: absolute;
-			}
+		#pickUp {
+			position: absolute;
+		}
 
-		</style>
-	</head>
-	<body>
-		<script src="js/three.js"></script>
-		<script src="js/PointerLockControls.js"></script>
-		<script src="js/MTLLoader.js"></script>
-		<script src="js/OBJLoader.js"></script>
-		<script src="js/EffectComposer.js"></script>
-		<script src="js/CopyShader.js"></script>
-		<script src="js/ShaderPass.js"></script>
-		<script src="js/RenderPass.js"></script>
-		<script src="js/OutlinePass.js"></script>
-		<script src="js/loader.js"></script>
+		#hint {
+			position: absolute;
+		}
+	</style>
+</head>
 
-		<div id="blocker">
+<body>
+	<script src="js/three.js"></script>
+	<script src="js/PointerLockControls.js"></script>
+	<script src="js/MTLLoader.js"></script>
+	<script src="js/OBJLoader.js"></script>
+	<script src="js/EffectComposer.js"></script>
+	<script src="js/CopyShader.js"></script>
+	<script src="js/ShaderPass.js"></script>
+	<script src="js/RenderPass.js"></script>
+	<script src="js/OutlinePass.js"></script>
+	<script src="js/loader.js"></script>
 
-			<div id="instructions">
-				<span style="font-size:40px">Click to play</span>
-				<br />
-				(W, A, S, D = Move, C = Crouch, MOUSE = Look around, E = Pick up object)
-			</div>
-			<div id="deathscreen">
-				<span style="font-size:40px">You died</span>
-				<br />
-				(Press R to try again)
-			</div>
+	<div id="blocker">
+
+		<div id="instructions">
+			<img src="textures/logo.png">
+			<br />
+			<span style="font-size:40px">Click to play</span>
+			<br />
+			Find all hidden notes in this underground bunker and escape.
+			<br />
+			Beware of the horrors that will attempt to stop you.
+			<br />
+			(W, A, S, D = Move, C = Crouch, MOUSE = Look around, E = Pick up a note)
+		</div>
+		<div id="deathscreen">
+			<span style="font-size:40px">You died</span>
+			<br />
+			<span id="noNotes">0 out of 6 notes collected.</span>
+			<br />
+			(Press R to try again)
+		</div>
+
+	</div>
+
+	<div id="ui">
+
+		<div id="health">
+
+		</div>
+		<div id="stamina">
 
 		</div>
 
-		<div id="ui">
-
-			<div id="health">
-				
-			</div>
-			<div id="stamina">
-				
-			</div>
-
-			<div id="notes">
-
-			</div>
+		<div id="notes">
 
 		</div>
 
-		<div style="width:100%;height:50px;text-align: center; color:white;" class="pickUp" id="pickUp">Press E to pick up the note.</div>
-		<div style="width:100%;height:50px;text-align: center; color:white; display:none" class="hint" id="hint">Proceed to the exit.</div>
-		<script src="js/world.js"></script>
-		<script src="js/monster.js"></script>
-		<script src="js/game.js"></script>
-	</body>
+	</div>
+
+	<div style="width:100%;height:50px;text-align: center; color:white;" class="pickUp" id="pickUp">Press E to pick up the
+		note.</div>
+	<div style="width:100%;height:50px;text-align: center; color:white; display:none" class="hint" id="hint">Proceed to
+		the exit.</div>
+	<script src="js/world.js"></script>
+	<script src="js/monster.js"></script>
+	<script src="js/game.js"></script>
+</body>
+
 </html>
