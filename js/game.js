@@ -97,6 +97,8 @@ var monsterTeleport = false;
 var achtervolg = false;
 var sound;
 var rayXOrigin = 10;
+var walkingSound;
+var runningSound;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -239,16 +241,31 @@ function init() {
 	camera.add(listener);
 
 	// create a global audio source
-	var sound = new THREE.Audio(listener);
+	sound = new THREE.Audio(listener);
+	walkingSound = new THREE.Audio(listener);
+	runningSound = new THREE.Audio(listener);
 
 	// load a sound and set it as the Audio object's buffer AFRICAAAAAAAAAAAAAAAAAAAAAAAAAA
 	var audioLoader = new THREE.AudioLoader();
-	audioLoader.load('sounds/Toto-Africa.mp3', function (buffer) {
+	audioLoader.load('sounds/Background_Music.mp3', function (buffer) {
 		sound.setBuffer(buffer);
 		sound.setLoop(true);
 		sound.setVolume(0.5);
 		sound.play();
 	});
+
+	audioLoader.load('sounds/Walking_Steps.mp3', function (buffer) {
+		walkingSound.setBuffer(buffer);
+		walkingSound.setLoop(true);
+		walkingSound.setVolume(0.5);
+	});
+
+	audioLoader.load('sounds/Running_Steps.mp3', function (buffer) {
+		runningSound.setBuffer(buffer);
+		runningSound.setLoop(true);
+		runningSound.setVolume(0.5);
+	});
+
 	// floor number : 1,4,10,23,39 best,,240best,241,243
 	var textureLoader = new THREE.TextureLoader();
 	var floorTexture = textureLoader.load('textures/pattern_41/specular.png');
@@ -380,16 +397,16 @@ function animate() {
 		var intersectionsX = raycasterX.intersectObjects(notes);
 
 		if (intersectionsX.length > 0) {
-			if ( INTERSECTED != intersectionsX[ 0 ].object ) {
-				if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
-				INTERSECTED = intersectionsX[ 0 ].object;
+			if (INTERSECTED != intersectionsX[0].object) {
+				if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+				INTERSECTED = intersectionsX[0].object;
 				INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-				INTERSECTED.material.emissive.setHex( 0xff0000 );
+				INTERSECTED.material.emissive.setHex(0xff0000);
 
 				pickUp.style.display = 'block';
 			}
 		} else {
-			if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+			if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
 			INTERSECTED = null;
 			pickUp.style.display = 'none';
 		}
@@ -421,12 +438,22 @@ function animate() {
 			if (moveForward) {
 				velocity.z += -1.5;
 				stamina -= 3;
+				if (!runningSound.isPlaying) { 
+					if (walkingSound.isPlaying) walkingSound.stop();
+					runningSound.play();
+				}
 			}
 		}
 		else {
-			if (!((moveForward || moveBackward) && !(moveForward && moveBackward)) && !((moveLeft || moveRight) && !(moveLeft && moveRight)))
+			if (!((moveForward || moveBackward) && !(moveForward && moveBackward)) && !((moveLeft || moveRight) && !(moveLeft && moveRight))) {
 				if (stamina < 1000) stamina += 2; else stamina = 1000;
-
+				if (walkingSound.isPlaying) walkingSound.stop();
+				if (runningSound.isPlaying) runningSound.stop();
+			}
+			else if (!walkingSound.isPlaying) {
+				if (runningSound.isPlaying) runningSound.stop();
+				walkingSound.play();
+			}
 		}
 
 		if (crouch) {
@@ -454,14 +481,14 @@ function animate() {
 			achtervolg = false;
 			monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
 			var interval = window.setInterval(function () {
-				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 100) {
+				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 70) {
 					window.clearInterval(interval);
 					monster.position.set(0, 100, 0);
 				}
 				else {
 					monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
 				}
-			}, 3000);
+			}, 5000);
 		}
 
 		if (forwardObject === true) {
