@@ -4,7 +4,7 @@ var objects = [];
 var notes = [];
 
 var raycasterF, raycasterB, raycasterL, raycasterR, raycasterX, INTERSECTED;
-var composer, outlinePass;
+var composer, outlinePass, allowPickUp;
 
 var lantern;
 
@@ -13,6 +13,7 @@ var instructions = document.getElementById('instructions');
 var deathscreen = document.getElementById('deathscreen');
 
 var pickUp = document.getElementById('pickUp');
+var hint = document.getElementById('hint');
 
 var props;
 
@@ -23,6 +24,17 @@ var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement
 if (havePointerLock) {
 
 	var element = document.body;
+	
+	function tryPickUp(){
+		if(allowPickUp === true){
+			note++;
+			scene.remove(INTERSECTED);
+			notes.splice(notes.indexOf(INTERSECTED), 1);
+		}
+		if(note == 6){
+			hint.style.display = 'block';
+		}
+	}
 
 	var pointerlockchange = function (event) {
 
@@ -75,7 +87,7 @@ if (havePointerLock) {
 
 	}, false);
 
-} else {
+} else {	
 
 	instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
 
@@ -92,6 +104,7 @@ var crouch = false;
 var sprint = false;
 var health = 100;
 var stamina = 1000;
+var note = 0;
 var monster;
 var monsterTeleport = false;
 var achtervolg = false;
@@ -183,9 +196,10 @@ function init() {
 				break;
 			case 82: //r
 				if (!health) location.reload();
-
+			case 69: //e
+				tryPickUp();
+				break;
 		}
-
 	};
 
 	var onKeyUp = function (event) {
@@ -261,7 +275,7 @@ function init() {
 		side: THREE.DoubleSide
 	});
 
-	var floorGeometry = new THREE.PlaneBufferGeometry(2000, 2000, 100, 100);
+	var floorGeometry = new THREE.PlaneBufferGeometry(700, 700, 1, 1);
 
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	floor.position.y = -0.5;
@@ -281,7 +295,7 @@ function init() {
 		side: THREE.DoubleSide
 	});
 
-	var ceilingGeometry = new THREE.PlaneBufferGeometry(2000, 2000, 100, 100);
+	var ceilingGeometry = new THREE.PlaneBufferGeometry(700, 700, 1, 1);
 
 	var ceiling = new THREE.Mesh(ceilingGeometry, cealingMaterial);
 	ceiling.position.y = 20;
@@ -331,10 +345,22 @@ function init() {
 
 	window.addEventListener('resize', onWindowResize, false);
 
-	var boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-	var box = new THREE.Mesh(boxGeometry, cealingMaterial);
-	scene.add(box);
-	notes.push(box);
+	var notePlane = new THREE.PlaneGeometry(1.5, 3);
+	var noteMaterial = new THREE.MeshPhongMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+	var noteObj = new THREE.Mesh(notePlane, noteMaterial);
+
+	scene.add(noteObj);
+	for(i = 0; i < 6; i++){
+		notes.push(noteObj.clone());
+		scene.add(notes[i]);
+	}
+	notes[0].position.set(139, 8, 26);
+	notes[0].position.set(-80, 10, -20.5);
+	notes[2].position.set(-160, 1, -47);
+	notes[3].position.set(-36, 3, 47);
+	notes[4].position.set(-3, 4, 166);
+	notes[5].position.set(51, 6, 78.7);
+	
 }
 
 function onWindowResize() {
@@ -350,6 +376,7 @@ function animate() {
 	if (controlsEnabled === true) {
 		document.getElementById("health").innerHTML = "HP Points: " + health;
 		document.getElementById("stamina").innerHTML = "Stamina: " + stamina / 10;
+		document.getElementById("notes").innerHTML = "Notes: " + note;
 
 		raycasterF.ray.origin.copy(controls.getObject().position);
 		camera.getWorldDirection(raycasterF.ray.direction);
@@ -376,7 +403,7 @@ function animate() {
 		var intersectionsL = raycasterL.intersectObjects(objects);
 		var intersectionsR = raycasterR.intersectObjects(objects);
 
-		var intersectionsX = raycasterX.intersectObjects(notes);
+		var intersectionsX = raycasterX.intersectObjects(notes, true);
 
 		if (intersectionsX.length > 0) {
 			if ( INTERSECTED != intersectionsX[ 0 ].object ) {
@@ -385,12 +412,15 @@ function animate() {
 				INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
 				INTERSECTED.material.emissive.setHex( 0xff0000 );
 
+				allowPickUp = true;
+
 				pickUp.style.display = 'block';
 			}
 		} else {
 			if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
 			INTERSECTED = null;
 			pickUp.style.display = 'none';
+			allowPickUp = false;
 		}
 
 		var forwardObject = intersectionsF.length > 0;
@@ -440,7 +470,7 @@ function animate() {
 		}
 
 		if (Math.abs(controls.getObject().position.x - monster.position.x) < 12 && Math.abs(controls.getObject().position.z - monster.position.z) < 12) {
-			health -= 1;
+			//health -= 1;
 		}
 
 		if (monsterTeleport) {
