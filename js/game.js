@@ -513,7 +513,7 @@ function animate() {
 			achtervolg = false;
 			monster.position.set(controls.getObject().position.x, 0, controls.getObject().position.z - 10);
 			var interval = window.setInterval(function () {
-				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 40) {
+				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 60) {
 					window.clearInterval(interval);
 					monster.position.set(0, 100, 0);
 				}
