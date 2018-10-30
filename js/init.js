@@ -22,7 +22,7 @@ function init() {
 	scene.add(controls.getObject());
 
 	monster = new Monster();
-	monster.position.set(10, 0, 10);
+	monster.position.set(220, 0, -170);
 
 	scene.add(monster);
 	objects.push(monster);

@@ -184,7 +184,7 @@ function animate() {
 		if (sprint && stamina > 2) {
 			if (moveForward) {
 				velocity.z = velocity.z * 1.11;
-				stamina -= 3;
+				//stamina -= 3;
 			}
 		}
 		else {
