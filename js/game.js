@@ -557,6 +557,7 @@ function animate() {
 			var interval = window.setInterval(function () {
 				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 50) {
 					window.clearInterval(interval);
+					chasingSound.stop();
 					monster.position.set(205, 0, -169);
 				}
 				else {
