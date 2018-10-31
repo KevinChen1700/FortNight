@@ -385,64 +385,100 @@ for (i = horizontal.length; i < vertical.length + horizontal.length; i++) {
 		 props.add(mesh);
 	 });
 	 loadOBJModel("models/", "detailChalice.obj", "models/", "detailChalice.mtl", (mesh) => {
-		 mesh.scale.set(10,10,10);
-		 mesh.material = new THREE.MeshBasicMaterial;
-		 mesh.position.set(-300,3.5,-70);
-		 props.add(mesh);
-	 });
-	 loadOBJModel("models/", "bed.obj", "models/", "bed.mtl", (mesh) => {
-		 var textureLoader = new THREE.TextureLoader();
-				 var map = textureLoader.load('models/bedTexture.png');
-				 var material = new THREE.MeshPhongMaterial({map: map});
-	 
-				 mesh.traverse(function (node){
-					 if(node.isMesh) node.material = material;
-				 });
-		 
-		 mesh.material = new THREE.MeshBasicMaterial;
-		 mesh.position.set(-6,3,167);
-		 props.add(mesh);
+		mesh.scale.set(10,10,10);
+		mesh.material = new THREE.MeshBasicMaterial;
+		mesh.position.set(-300,3.5,-70);
+		props.add(mesh);
+		var mesh2 = mesh.clone();
+		mesh2.position.set(-104,0,262);
+		mesh2.rotation.z = 1.5;
+		props.add(mesh2);
+	});
+	loadOBJModel("models/", "bed.obj", "models/", "bed.mtl", (mesh) => {
+		var textureLoader = new THREE.TextureLoader();
+				var map = textureLoader.load('models/bedTexture.png');
+				var material = new THREE.MeshPhongMaterial({map: map});
+	
+				mesh.traverse(function (node){
+					if(node.isMesh) node.material = material;
+				});
+		
+		mesh.material = new THREE.MeshBasicMaterial;
+		mesh.position.set(-6,3,167);
+		props.add(mesh);
 
-		 var mesh2 = mesh.clone();
-		 mesh2.rotation.x = 1.5;
-		 mesh2.rotation.z = 1.5;
-		 mesh2.position.set(-92,5,-40);
-		 props.add(mesh2);
-		 
-		 var mesh3 = mesh.clone();
-		 mesh3.position.set(-35,2,47);
-		 props.add(mesh3);
-	 });
-	 
-	 loadOBJModel("models/", "Sedia.obj", "models/", "Sedia.mtl", (mesh) => {
-		 var textureLoader = new THREE.TextureLoader();
-				 var map = textureLoader.load('models/Sedia.png');
-				 var material = new THREE.MeshPhongMaterial({map: map});
-	 
-				 mesh.traverse(function (node){
-					 if(node.isMesh) node.material = material;
-				 });
-		 mesh.scale.set(0.3,0.3,0.3);
-		 mesh.material = new THREE.MeshBasicMaterial;
-		 mesh.rotation.y = 1.5;
-		 mesh.position.set(-300,3.5,-70);
-		 props.add(mesh);
-	 });
-	 
-	 loadOBJModel("models/", "body.obj", "models/", "cross.mtl", (mesh) => {
-		 var textureLoader = new THREE.TextureLoader();
-				 var map = textureLoader.load('models/body.png');
-				 var material = new THREE.MeshPhongMaterial({map: map});
-	 
-				 mesh.traverse(function (node){
-					 if(node.isMesh) node.material = material;
-				 });
-		 mesh.scale.set(0.09,0.09,0.09);
-		 mesh.material = new THREE.MeshBasicMaterial;
-		 mesh.rotation.x = 4.65;
-		 mesh.position.set(-17,2.3,72);
-		 props.add(mesh);
-	 });
+		var mesh2 = mesh.clone();
+		mesh2.rotation.x = 1.5;
+		mesh2.rotation.z = 1.5;
+		mesh2.position.set(-92,5,-40);
+		props.add(mesh2);
+		
+		var mesh3 = mesh.clone();
+		mesh3.position.set(-35,2,47);
+		props.add(mesh3);
+	});
+	
+	loadOBJModel("models/", "Sedia.obj", "models/", "Sedia.mtl", (mesh) => {
+		var textureLoader = new THREE.TextureLoader();
+				var map = textureLoader.load('models/Sedia.png');
+				var material = new THREE.MeshPhongMaterial({map: map});
+	
+				mesh.traverse(function (node){
+					if(node.isMesh) node.material = material;
+				});
+		mesh.scale.set(0.3,0.3,0.3);
+		mesh.material = new THREE.MeshBasicMaterial;
+		mesh.rotation.y = 1.5;
+		mesh.position.set(-300,3.5,-70);
+		props.add(mesh);
+	});
+	
+	loadOBJModel("models/", "body.obj", "models/", "Sedia.mtl", (mesh) => {
+		var textureLoader = new THREE.TextureLoader();
+				var map = textureLoader.load('models/body.png');
+				var material = new THREE.MeshPhongMaterial({map: map});
+	
+				mesh.traverse(function (node){
+					if(node.isMesh) node.material = material;
+				});
+		mesh.scale.set(0.09,0.09,0.09);
+		mesh.material = new THREE.MeshBasicMaterial;
+		mesh.rotation.x = 4.65;
+		mesh.position.set(-17,2.3,72);
+		props.add(mesh);
+	});
+
+	loadOBJModel("models/", "exit1.obj", "models/", "exit1.mtl", (mesh) => {
+	   var textureLoader = new THREE.TextureLoader();
+			   var map = textureLoader.load('models/exit1.png');
+			   var material = new THREE.MeshPhongMaterial({map: map});
+   
+			   mesh.traverse(function (node){
+				   if(node.isMesh) node.material = material;
+			   });
+	   mesh.scale.set(3,3,3);
+	   mesh.material = new THREE.MeshBasicMaterial;
+	   mesh.position.set(277.5,14,-179.5);
+	   props.add(mesh);
+   });
+
+   loadOBJModel("models/", "exit2.obj", "models/", "exit1.mtl", (mesh) => {
+	   var textureLoader = new THREE.TextureLoader();
+			   var map = textureLoader.load('models/exit2.png');
+			   var material = new THREE.MeshPhongMaterial({map: map});
+   
+			   mesh.traverse(function (node){
+				   if(node.isMesh) node.material = material;
+			   });
+	   mesh.scale.set(0.03,0.03,0.03);
+	   mesh.material = new THREE.MeshBasicMaterial;
+	   mesh.position.set(176,14,-20);
+	   props.add(mesh);
+	   var mesh2 = mesh.clone();
+	   mesh2.position.set(290,14,-33);
+	   mesh2.rotation.y = 1.5;
+	   props.add(mesh2);
+   });
 }
 }
 
