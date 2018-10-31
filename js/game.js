@@ -34,7 +34,7 @@ if (havePointerLock) {
 
 				controlsEnabled = true;
 				controls.enabled = true;
-
+				console.log(controlsEnabled);
 				blocker.style.display = 'none';
 				pickUp.style.display = 'none';
 
@@ -106,7 +106,7 @@ var moveRight = false;
 var canJump = false;
 var crouch = false;
 var sprint = false;
-var health = 100;
+var health = 500;
 var stamina = 1000;
 var note = 0;
 var win = false;
@@ -365,7 +365,7 @@ function init() {
 
 	window.setInterval(function () {
 		if (Math.sqrt(Math.pow(controls.getObject().position.x - lastPositionx, 2) + Math.pow(controls.getObject().position.z - lastPositionz, 2)) < 40) {
-			if (controlsEnabled == true) {
+			if (controlsEnabled == true && document.readyState === "complete") {
 				achtervolg = true;
 			}
 		}
@@ -543,7 +543,7 @@ function animate() {
 		}
 
 		if (Math.abs(controls.getObject().position.x - monster.position.x) < 12 && Math.abs(controls.getObject().position.z - monster.position.z) < 12) {
-			//health -= 1;
+			health -= 1;
 		}
 
 		if (monsterTeleport) {
@@ -563,7 +563,7 @@ function animate() {
 				else {
 					monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
 				}
-			}, 5000);
+			}, 8000);
 		}
 
 		if (forwardObject === true) {
@@ -592,8 +592,8 @@ function animate() {
 
 		}
 
-		if (!health) {
-			document.getElementById('ui').style.display = none;
+		if (health <= 0) {
+			document.getElementById('ui').style.display = 'none';
 			controlsEnabled = false;
 			controls.enabled = false;
 			blocker.style.display = 'block';
