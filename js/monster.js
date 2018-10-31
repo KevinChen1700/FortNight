@@ -1,4 +1,4 @@
-class Monster extends THREE.Group {
+class Monster extends THREE.Mesh {
     constructor() {
         super();
 
