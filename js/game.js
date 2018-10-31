@@ -145,9 +145,10 @@ function init() {
 
 	monster = new Monster();
 	monster.position.set(205, 0, -169);
+	monster.updateMatrixWorld();
 
-	scene.add(monster);
 	objects.push(monster);
+	scene.add(monster);
 
 	lantern = new THREE.Group();
 	loadOBJModel("models/", "lantern.obj", "models/", "lantern.mtl", (mesh) => {
@@ -419,6 +420,8 @@ function onWindowResize() {
 }
 
 function animate() {
+	
+	
 	requestAnimationFrame(animate);
 
 	checkWin();
@@ -554,11 +557,13 @@ function animate() {
 			chasingSound.play();
 			achtervolg = false;
 			monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
+			monster.updateMatrixWorld();
 			var interval = window.setInterval(function () {
 				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 50) {
 					window.clearInterval(interval);
 					chasingSound.stop();
 					monster.position.set(205, 0, -169);
+					monster.updateMatrixWorld();
 				}
 				else {
 					monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
@@ -567,6 +572,7 @@ function animate() {
 		}
 
 		if (forwardObject === true) {
+			console.log("hit");
 			velocity.z = 1;
 		}
 		if (backObject === true) {
@@ -609,6 +615,7 @@ function animate() {
 function checkWin() {
 	if (note == 6) {
 		monster.position.set(-1000, 0, -1000);
+		monster.updateMatrixWorld();
 	}
 	if (controls.getObject().position.x <= 205 && (controls.getObject().position.z <= -146 && controls.getObject().position.z >= -194)) {
 		if (note == 6) {
