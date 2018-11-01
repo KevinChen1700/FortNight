@@ -572,7 +572,7 @@ function animate() {
 				else {
 					monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
 				}
-			}, 6000);
+			}, 8000);
 		}
 
 		if(audioFading){
