@@ -134,6 +134,8 @@ animate();
 function init() {
 	pickUp.style.display = 'none';
 	deathscreen.style.display = 'none';
+	document.getElementById('ui').style.display = 'none';
+
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 101);
 
 	scene = new THREE.Scene();
@@ -437,6 +439,8 @@ function animate() {
 	});
 
 	if (controlsEnabled === true) {
+		document.getElementById('ui').style.display = 'block';
+
 		document.getElementById("health").innerHTML = "HP Points: " + health;
 		document.getElementById("stamina").innerHTML = "Stamina: " + stamina / 10;
 		document.getElementById("notes").innerHTML = "Notes: " + note;
