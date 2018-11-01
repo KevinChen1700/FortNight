@@ -119,6 +119,8 @@ var walkingSound;
 var runningSound;
 var chasingSound;
 var monsterSound;
+var noteSound;
+var closeNote = false;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -134,8 +136,6 @@ animate();
 function init() {
 	pickUp.style.display = 'none';
 	deathscreen.style.display = 'none';
-	document.getElementById('ui').style.display = 'none';
-
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 101);
 
 	scene = new THREE.Scene();
@@ -147,10 +147,9 @@ function init() {
 
 	monster = new Monster();
 	monster.position.set(205, 0, -169);
-	monster.updateMatrixWorld();
 
-	objects.push(monster);
 	scene.add(monster);
+	objects.push(monster);
 
 	lantern = new THREE.Group();
 	loadOBJModel("models/", "lantern.obj", "models/", "lantern.mtl", (mesh) => {
@@ -273,6 +272,7 @@ function init() {
 	runningSound = new THREE.Audio(listener);
 	chasingSound = new THREE.Audio(listener);
 	monsterSound = new THREE.Audio(listener);
+	noteSound = new THREE.PositionalAudio(listener);
 
 	// load a sound and set it as the Audio object's buffer AFRICAAAAAAAAAAAAAAAAAAAAAAAAAA
 	var audioLoader = new THREE.AudioLoader();
@@ -303,8 +303,15 @@ function init() {
 
 	audioLoader.load('sounds/Monster_Growl.mp3', function (buffer) {
 		monsterSound.setBuffer(buffer);
-		chasingSound.setLoop(false);
-		chasingSound.setVolume(0.5);
+		monsterSound.setLoop(false);
+		monsterSound.setVolume(0.8);
+	});
+
+	audioLoader.load('sounds/Note_Sound.mp3', function (buffer) {
+		noteSound.setBuffer(buffer);
+		noteSound.setLoop(true);
+		noteSound.setVolume(0.5);
+		noteSound.setRefDistance(20);
 	});
 
 	// floor number : 1,4,10,23,39 best,,240best,241,243
@@ -404,6 +411,7 @@ function init() {
 	for (i = 0; i < 6; i++) {
 		notes.push(noteObj.clone());
 		scene.add(notes[i]);
+		notes[i].add(noteSound);
 	}
 	notes[0].position.set(139, 8, 26);
 	notes[1].position.set(-80, 10, -20.5);
@@ -411,7 +419,6 @@ function init() {
 	notes[3].position.set(-36, 3, 47);
 	notes[4].position.set(-3, 4, 166);
 	notes[5].position.set(51, 6, 78.7);
-
 }
 
 function onWindowResize() {
@@ -422,8 +429,6 @@ function onWindowResize() {
 }
 
 function animate() {
-	
-	
 	requestAnimationFrame(animate);
 
 	checkWin();
@@ -439,8 +444,6 @@ function animate() {
 	});
 
 	if (controlsEnabled === true) {
-		document.getElementById('ui').style.display = 'block';
-
 		document.getElementById("health").innerHTML = "HP Points: " + health;
 		document.getElementById("stamina").innerHTML = "Stamina: " + stamina / 10;
 		document.getElementById("notes").innerHTML = "Notes: " + note;
@@ -561,13 +564,11 @@ function animate() {
 			chasingSound.play();
 			achtervolg = false;
 			monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
-			monster.updateMatrixWorld();
 			var interval = window.setInterval(function () {
 				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 50) {
 					window.clearInterval(interval);
 					chasingSound.stop();
 					monster.position.set(205, 0, -169);
-					monster.updateMatrixWorld();
 				}
 				else {
 					monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
@@ -576,7 +577,6 @@ function animate() {
 		}
 
 		if (forwardObject === true) {
-			console.log("hit");
 			velocity.z = 1;
 		}
 		if (backObject === true) {
@@ -602,6 +602,18 @@ function animate() {
 
 		}
 
+		notes.forEach(function(note){
+			if(note.position.distanceTo(controls.getObject().position) < 70) closeNote = true;
+		});
+
+		if (closeNote) {
+			if (!noteSound.isPlaying) noteSound.play();
+			closeNote = false;
+		}
+		else {
+			if (noteSound.isPlaying) noteSound.stop();
+		}
+
 		if (health <= 0) {
 			document.getElementById('ui').style.display = 'none';
 			controlsEnabled = false;
@@ -619,7 +631,6 @@ function animate() {
 function checkWin() {
 	if (note == 6) {
 		monster.position.set(-1000, 0, -1000);
-		monster.updateMatrixWorld();
 	}
 	if (controls.getObject().position.x <= 205 && (controls.getObject().position.z <= -146 && controls.getObject().position.z >= -194)) {
 		if (note == 6) {
