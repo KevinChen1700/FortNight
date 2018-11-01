@@ -228,26 +228,26 @@ for ( var i = 0; i < horizontal.length; i++) {
 
 	switch (i){
 	case 34: case 41: case 56:
-	walls.push(new THREE.Mesh(new THREE.PlaneGeometry(20, 20), extrawall)); break;
-	
+	walls.push(new THREE.Mesh(new THREE.PlaneGeometry(20, 20), extrawall)); 
+	break;	
 	case 0 : case 1 :case 2 :case 3 :case 4 :case 5 :	
 	walls.push(new THREE.Mesh(new THREE.PlaneGeometry(20, 20), slenderWall));//de werkende slenderwall
-
+	break;
 	case 51 : case 69 :case 74 :case 99 :case 111 :case 158 : case 165 : case 131 :case 145 :case 134 :case 157 :case 29  : case 31 :case 47 :case 59 :case 18 :
 	walls.push(new THREE.Mesh(new THREE.PlaneGeometry(20, 20), bloodwall));//decorative wall
-
+	break;
 	case 53 : case 61 :case 79 :case 92 :case 120 :case 158 : case 160 : case 121 :case 150 :case 139 :case 158 :case 141 :case 19 : case 39 :case 41 :
 	walls.push(new THREE.Mesh(new THREE.PlaneGeometry(20, 20), bewareoftikkele));//decorative wall
-
-	case 12:
+	break;
+	case 6:
 	walls.push(new THREE.Mesh(new THREE.PlaneGeometry(20, 20), wallmap1));//map wall
-
-	case 13: 
+	break;
+	case 7: 
 	walls.push(new THREE.Mesh(new THREE.PlaneGeometry(20, 20), wallmap2));//map wall
-
-	case 14:
+	break;
+	case 8:
 	walls.push(new THREE.Mesh(new THREE.PlaneGeometry(20, 20), wallmap3));//wap wall
-
+	break;
 	default:
 	walls.push(new THREE.Mesh(new THREE.PlaneGeometry(20, 20), standardwall));//standard wall
 	break;
