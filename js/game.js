@@ -34,7 +34,6 @@ if (havePointerLock) {
 
 				controlsEnabled = true;
 				controls.enabled = true;
-				console.log(controlsEnabled);
 				blocker.style.display = 'none';
 				pickUp.style.display = 'none';
 
@@ -121,6 +120,7 @@ var chasingSound;
 var monsterSound;
 var noteSound;
 var closeNote = false;
+var audioFading = false;
 
 var prevTime = performance.now();
 var velocity = new THREE.Vector3();
@@ -140,7 +140,7 @@ function init() {
 
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(000000);
-	scene.fog = new THREE.Fog(000000, 0, 50);
+	scene.fog = new THREE.Fog(000000, 0, 62);
 
 	controls = new THREE.PointerLockControls(camera);
 	scene.add(controls.getObject());
@@ -159,7 +159,7 @@ function init() {
 		mesh.position.z = -3;
 		lantern.add(mesh);
 
-		var l = new THREE.PointLight(0xffd6aa, 1, 35);
+		var l = new THREE.PointLight(0xffd6aa, 1, 60);
 		l.castShadow = true;
 		l.shadow.mapSize.width = 512;  // default
 		l.shadow.mapSize.height = 512; // default
@@ -381,7 +381,7 @@ function init() {
 		}
 		lastPositionx = controls.getObject().position.x;
 		lastPositionz = controls.getObject().position.z;
-	}, 10000);
+	}, 12000);
 
 	window.setInterval(function () {
 		monsterSound.play();
@@ -407,7 +407,6 @@ function init() {
 	var noteMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, side: THREE.DoubleSide });
 	var noteObj = new THREE.Mesh(notePlane, noteMaterial);
 
-	scene.add(noteObj);
 	for (i = 0; i < 6; i++) {
 		notes.push(noteObj.clone());
 		scene.add(notes[i]);
@@ -567,13 +566,28 @@ function animate() {
 			var interval = window.setInterval(function () {
 				if (Math.sqrt(Math.pow(controls.getObject().position.x - monster.position.x, 2) + Math.pow(controls.getObject().position.z - monster.position.z, 2)) > 50) {
 					window.clearInterval(interval);
-					chasingSound.stop();
+					audioFading = true;
 					monster.position.set(205, 0, -169);
 				}
 				else {
 					monster.position.set(controls.getObject().position.x + (raycasterX.ray.direction.x * 10), 0, controls.getObject().position.z + (raycasterX.ray.direction.z * 10));
 				}
-			}, 8000);
+			}, 6000);
+		}
+
+		if(audioFading){
+			audioFading = false;
+			var vol = 5;
+			var audioFade = window.setInterval(function () {		
+			vol--;
+			if (vol == 0) {
+				chasingSound.stop();
+				clearInterval(audioFade);
+			}
+			else {
+				chasingSound.setVolume(vol/10);
+			}
+			}, 1000);
 		}
 
 		if (forwardObject === true) {
@@ -602,8 +616,8 @@ function animate() {
 
 		}
 
-		notes.forEach(function(note){
-			if(note.position.distanceTo(controls.getObject().position) < 70) closeNote = true;
+		notes.forEach(function (note) {
+			if (note.position.distanceTo(controls.getObject().position) < 70) closeNote = true;
 		});
 
 		if (closeNote) {
@@ -629,9 +643,6 @@ function animate() {
 }
 
 function checkWin() {
-	if (note == 6) {
-		monster.position.set(-1000, 0, -1000);
-	}
 	if (controls.getObject().position.x <= 205 && (controls.getObject().position.z <= -146 && controls.getObject().position.z >= -194)) {
 		if (note == 6) {
 			win = true;
