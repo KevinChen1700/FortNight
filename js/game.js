@@ -408,7 +408,7 @@ function init() {
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
-	//[Wat is een composer?] *niet af*
+	//Deze drie variabelen zorgen ervoor dat de briefjes rood worden
 	composer = new THREE.EffectComposer(renderer);
 	var renderPass = new THREE.RenderPass(scene, camera);
 	composer.addPass(renderPass);
@@ -502,7 +502,7 @@ function animate() {
 		//De raycaster kijkt of er een note wordt gedetecteerd
 		var intersectionsX = raycasterX.intersectObjects(notes, true);
 
-		//Pawel pls *Pawel niet af*
+		//De briefjes worden rood gemaakt en er verschijnt een berich op het scherm
 		if (intersectionsX.length > 0) {
 			if (INTERSECTED != intersectionsX[0].object) {
 				if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
@@ -521,7 +521,7 @@ function animate() {
 			allowPickUp = false;
 		}
 
-		//Pawel pls again *Pawel niet af*
+		//True als er een object wordt gedetecteerd door de raycaster
 		var forwardObject = intersectionsF.length > 0;
 		var backObject = intersectionsB.length > 0;
 		var leftObject = intersectionsL.length > 0;
@@ -636,7 +636,7 @@ function animate() {
 			}, 1000);
 		}
 
-		//Geen idee *niet af*
+		//Collisions, als je in een muur loopt wordt je de andere kant uit gedrukt
 		if (forwardObject === true) {
 			velocity.z = 1;
 		}
@@ -653,16 +653,6 @@ function animate() {
 		controls.getObject().translateX(velocity.x * delta);
 		controls.getObject().translateY(velocity.y * delta);
 		controls.getObject().translateZ(velocity.z * delta);
-
-		//Dit kan weg denk ik *niet af*
-		if (controls.getObject().position.y < 10) {
-
-			velocity.y = 0;
-			controls.getObject().position.y = 10;
-
-			canJump = true;
-
-		}
 
 		//Er wordt gekeken of er een note dichtbij de speler is
 		notes.forEach(function (note) {

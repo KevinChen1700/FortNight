@@ -141,13 +141,13 @@ hallSQV.forEach(function (wall) {
 	vertical.push(wall);
 });
 
-//Horizontale muren voor gang aangegeven met [?] *Geoffrey niet af*
+//Horizontale muren voor gang aangegeven met niks
 hallEH = [[0, 100], [0, 260], [-20, 100], [-20, 120], [-20, 140], [-20, 220], [-20, 260], [-20, 240], [-60, 100], [-80, 100], [-40, 120], [-60, 120], [-40, 120], [-60, 120], [-60, 200], [-40, 180], [-40, 200], [-60, 160], [-60, 140], [-60, 180], [-80, 200], [-40, 240], [-40, 260], [-60, 240], [-60, 260], [-80, 240], [-80, 260], [-80, 280], [-80, 300], [-100, 300], [-120, 280], [-100, 140], [-120, 140], [-140, 140], [-100, 120], [-120, 120], [-140, 120], [-100, 180], [-40, 160], [-20, 160], [0, 160]];
 hallEH.forEach(function (wall) {
 	horizontal.push(wall);
 });
 
-//Verticale muren voor gang aangegeven met [?] *Geoffrey niet af*
+//Verticale muren voor gang aangegeven met niks
 hallEV = [[-70, 130], [-70, 170], [10, 110], [10, 150], [10, 230], [10, 250], [-10, 130], [-10, 230], [-30, 170], [-50, 90], [-30, 90], [-70, 290], [-90, 270], [-90, 170], [-90, 150], [-90, 110], [-30, 210], [-90, 210], [-90, 230], [-110, 190], [-110, 210], [-110, 230], [-110, 250], [-110, 270], [-110, 290]];
 hallEV.forEach(function (wall) {
 	vertical.push(wall);
@@ -233,7 +233,7 @@ var rightdoor = new THREE.MeshPhongMaterial({
 	map: rightdoorTexture
 });
 
-//De textures worden meegegeven aan specifieke muren
+//De textures worden meegegeven aan specifieke horizontale muren
 for (var i = 0; i < horizontal.length; i++) {
 	switch (i) {
 		case 34: case 41: case 56:
@@ -264,7 +264,7 @@ for (var i = 0; i < horizontal.length; i++) {
 	walls[i].position.set(horizontal[i][0], 10, horizontal[i][1]);
 }
 
-//vertical walls *Geoffrey niet af*
+//Verticale muren
 for (i = horizontal.length; i < vertical.length + horizontal.length; i++) {
 
 	if (i == horizontal.length)//exit door at slenderlair
